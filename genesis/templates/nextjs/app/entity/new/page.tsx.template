@@ -1,0 +1,15 @@
+import {{entity_type}}Form from '../../../components/{{entity_type}}Form';
+
+export default function New{{entity_type}}Page() {
+  return (
+    <div className="container mx-auto px-4 py-8">
+      <h1 className="text-2xl font-bold mb-6">Create New {{entity_type}}</h1>
+      <{{entity_type}}Form />
+    </div>
+  );
+}
+
+export const metadata = {
+  title: 'Create {{entity_type}}',
+  description: 'Create a new {{entity_type}}',
+};

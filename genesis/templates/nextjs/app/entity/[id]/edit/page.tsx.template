@@ -1,0 +1,71 @@
+'use client';
+
+import { useEffect, useState } from 'react';
+import { useParams, useRouter } from 'next/navigation';
+import { use{{entity_type}}Store } from '../../../../store/{{entity_name}}Store';
+import {{entity_type}}Form from '../../../../components/{{entity_type}}Form';
+
+export default function Edit{{entity_type}}Page() {
+  const router = useRouter();
+  const { id } = useParams();
+
+  const {
+    {{entity_name}}s,
+    loading,
+    error,
+    fetch{{entity_type}}ById
+  } = use{{entity_type}}Store();
+
+  const {{entity_name}} = {{entity_name}}s.find(item => item.id === id);
+
+  useEffect(() => {
+    if (id) {
+      fetch{{entity_type}}ById(id as string);
+    }
+  }, [id, fetch{{entity_type}}ById]);
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-48">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="bg-red-50 p-4 rounded-md border border-red-200">
+        <h2 className="text-red-700 text-lg font-semibold">Error loading {{entity_name}}</h2>
+        <p className="text-red-600">{error}</p>
+      </div>
+    );
+  }
+
+  if (!{{entity_name}}) {
+    return (
+      <div className="bg-yellow-50 p-4 rounded-md border border-yellow-200">
+        <h2 className="text-yellow-700 text-lg font-semibold">{{entity_type}} not found</h2>
+        <p className="text-yellow-600">The requested {{entity_name}} could not be found.</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
+        <h1 className="text-2xl font-bold">Edit {{entity_type}}</h1>
+        <button
+          onClick={() => router.back()}
+          className="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600"
+        >
+          Cancel
+        </button>
+      </div>
+
+      <{{entity_type}}Form
+        initialData={{{entity_name}}}
+        onSuccess={() => router.push(`/{{entity_name}}/${id}`)}
+      />
+    </div>
+  );
+}

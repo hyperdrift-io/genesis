@@ -1,0 +1,48 @@
+import { NextRequest, NextResponse } from 'next/server';
+import { {{entity_type}} } from '../../../../types/{{entity_name}}';
+
+// Mock database for demo purposes
+let {{entity_name}}s: {{entity_type}}[] = [
+  {
+    id: '1',
+    name: 'Example {{entity_type}}',
+    description: 'This is an example {{entity_name}}',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  }
+];
+
+export async function GET() {
+  return NextResponse.json({{entity_name}}s);
+}
+
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json();
+
+    // Validate required fields
+    if (!body.name) {
+      return NextResponse.json(
+        { error: 'Name is required' },
+        { status: 400 }
+      );
+    }
+
+    const new{{entity_type}}: {{entity_type}} = {
+      id: Date.now().toString(),
+      name: body.name,
+      description: body.description || '',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
+
+    {{entity_name}}s.push(new{{entity_type}});
+
+    return NextResponse.json(new{{entity_type}}, { status: 201 });
+  } catch (error) {
+    return NextResponse.json(
+      { error: 'Invalid request data' },
+      { status: 400 }
+    );
+  }
+}

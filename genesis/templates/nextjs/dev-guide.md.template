@@ -1,0 +1,123 @@
+# Developer Guide
+
+This document provides essential information for developers working on the {{app_title}} project.
+
+## Tech Stack Overview
+
+| Technology | Version | Purpose | Documentation |
+|------------|---------|---------|---------------|
+| Next.js | ^15.0.0 | React framework | [Docs](https://nextjs.org/docs) |
+| React | ^18.3.1 | UI library | [Docs](https://react.dev) |
+| TypeScript | ^5.3.3 | Type safety | [Docs](https://www.typescriptlang.org/docs/) |
+| Tailwind CSS | ^4.0.0-alpha.2 | Styling | [Docs](https://tailwindcss.com/docs) |
+| shadcn/ui | - | UI components | [Docs](https://ui.shadcn.com/docs) |
+| Lucide Icons | ^0.312.0 | Icon library | [Guide](https://lucide.dev/guide) |
+| Zustand | ^4.5.0 | State management | [Docs](https://docs.pmnd.rs/zustand) |
+{{#if {{requires_supabase}} == "true"}}
+| Supabase | ^2.39.3 | Backend services | [Docs](https://supabase.com/docs) |
+{{/if}}
+
+## Project Structure
+
+```
+{{app_name}}/
+├── src/
+│   ├── app/           # Next.js App Router pages
+│   ├── components/    # Reusable React components
+│   │   └── ui/        # shadcn/ui components
+│   ├── lib/           # Utility functions
+│   ├── services/      # API service layer
+│   ├── store/         # Zustand state management
+│   └── types/         # TypeScript interfaces
+├── public/            # Static assets
+└── components.json    # shadcn/ui configuration
+```
+
+## UI Framework
+
+We use shadcn/ui, a collection of reusable components built with Radix UI and Tailwind CSS. These components are fully accessible and customizable.
+
+For detailed component usage, see [COMPONENTS.md](./COMPONENTS.md).
+
+### Key UI Patterns
+
+1. **Class Utility**: Use the `cn()` utility for class name merging
+   ```tsx
+   import { cn } from "@/lib/utils";
+
+   <div className={cn("base-class", condition && "conditional-class")}>
+   ```
+
+2. **Component Variants**: Many components use the class-variance-authority (CVA) package to define variants
+   ```tsx
+   <Button variant="outline" size="sm">Click me</Button>
+   ```
+
+3. **Icons**: Import and use Lucide icons directly
+   ```tsx
+   import { Search, Settings } from "lucide-react";
+
+   <Search className="h-4 w-4" />
+   ```
+
+## State Management
+
+We use Zustand for state management. Each entity has its own store in the `src/store` directory.
+
+```tsx
+// Using a store
+import { useUserStore } from "@/store/userStore";
+
+function Component() {
+  const { users, fetchUsers } = useUserStore();
+
+  // ...
+}
+```
+
+{{#if {{requires_supabase}} == "true"}}
+## Supabase Integration
+
+This project uses Supabase for backend services. The connection is configured in `src/utils/supabase.ts`.
+
+```tsx
+// Using Supabase client
+import { supabase } from "@/utils/supabase";
+
+// Example query
+const { data, error } = await supabase
+  .from('table_name')
+  .select('*');
+```
+
+See the [Supabase documentation](https://supabase.com/docs) for more details.
+{{else}}
+## Local Storage
+
+This project uses browser localStorage for data persistence in development. When you're ready to upgrade to a real backend, look for the `CURSOR_RULE: REPLACE_WITH_SUPABASE` comments.
+{{/if}}
+
+## Development Workflow
+
+1. **Run the development server**:
+   ```bash
+   pnpm dev
+   ```
+
+2. **Add new UI components** using the shadcn CLI:
+   ```bash
+   npx shadcn-ui@latest add [component-name]
+   ```
+
+3. **Use Cursor rules** to get inline documentation and guidance (look for patterns in the `.cursorrules.json` file).
+
+## Resources
+
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features
+- [shadcn/ui Documentation](https://ui.shadcn.com/docs) - UI components
+- [Tailwind CSS](https://tailwindcss.com/docs) - utility-first CSS
+- [Lucide Icons](https://lucide.dev/icons) - icon gallery
+- [Zustand Documentation](https://docs.pmnd.rs/zustand) - state management
+{{#if {{requires_supabase}} == "true"}}
+- [Supabase Documentation](https://supabase.com/docs) - backend services
+{{/if}}

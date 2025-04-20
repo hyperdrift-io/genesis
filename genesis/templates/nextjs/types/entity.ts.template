@@ -1,0 +1,8 @@
+export interface {{entity_type}} {
+  id: string;
+  name: string;
+  description: string;
+  createdAt: string;
+  updatedAt: string;
+  // Add additional properties based on entity analysis
+}

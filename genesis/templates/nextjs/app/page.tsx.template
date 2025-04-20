@@ -1,0 +1,33 @@
+import Link from 'next/link';
+
+export default function Home() {
+  return (
+    <main className="container mx-auto px-4 py-8">
+      <section className="mb-12">
+        <h1 className="text-4xl font-bold mb-4">Welcome to {{app_title}}</h1>
+        <p className="text-xl text-gray-600 mb-6">{{description}}</p>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {{entity_links}}
+        </div>
+      </section>
+
+      {{#if {{local_first}} == "true"}}
+      <section className="mt-12 p-6 bg-blue-50 rounded-lg border border-blue-200">
+        <h2 className="text-2xl font-semibold text-blue-800 mb-3">Local-First Development</h2>
+        <p className="mb-3">This application is built with a local-first approach using browser localStorage for data persistence. Your data stays in your browser.</p>
+        <div className="bg-white p-4 rounded border border-blue-200">
+          <h3 className="text-lg font-semibold mb-2">Ready to add server persistence?</h3>
+          <p className="mb-2">When you're ready to add server-side persistence with Supabase:</p>
+          <ol className="list-decimal pl-5 space-y-1">
+            <li>Look for <code className="bg-gray-100 px-1 rounded">CURSOR_RULE</code> comments in your services and stores</li>
+            <li>Install Supabase: <code className="bg-gray-100 px-1 rounded">pnpm add @supabase/supabase-js</code></li>
+            <li>Set up your Supabase project and environment variables</li>
+            <li>Update your service implementations to use Supabase</li>
+          </ol>
+        </div>
+      </section>
+      {{/if}}
+    </main>
+  );
+}

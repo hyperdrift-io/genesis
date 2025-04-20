@@ -1,0 +1,16 @@
+export default function {{entity_type}}Layout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <section className="min-h-screen bg-gray-50">
+      {children}
+    </section>
+  );
+}
+
+export const metadata = {
+  title: '{{entity_type}}s',
+  description: 'Manage your {{entity_type}}s',
+};

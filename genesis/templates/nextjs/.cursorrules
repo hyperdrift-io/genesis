@@ -1,0 +1,50 @@
+# Genesis App Development Guidelines
+
+## General Rules
+- Always use PascalCase for React component filenames (e.g., UserProfile.tsx).
+- Avoid inline styles; prefer Tailwind CSS utility classes.
+- Remove unused imports and variables.
+- Focus on business logic in views and stores; technical concerns (API calls, routing) are already handled.
+
+## State Management
+- Use the provided Zustand stores for state management; extend existing stores for new features related to pre-generated entities.
+- Implement local-first operations (e.g., optimistic updates) as shown in existing store examples.
+- Keep business logic in stores or API modules to maintain separation of concerns.
+
+## API and Modules Pattern
+- Use the pre-configured API modules in 'src/modules/api/' for backend interactions; do not make direct API calls from components or stores.
+- If no backend is set up, rely on mock data in the API modules for development.
+- Place non-API business logic in dedicated modules under 'src/modules/core/'.
+
+## Component Structure
+- Keep UI components purely presentational, consuming data from stores.
+- Clearly define prop types using TypeScript interfaces.
+- Keep components small and focused on a single responsibility.
+
+## Routing and Navigation
+- Use Next.js pages for routing; place new pages in 'src/pages/' following the existing structure.
+- Define dynamic routes with bracket notation (e.g., [id].tsx) for entity details or dynamic segments.
+
+## TypeScript
+- Define interfaces for all entity types in 'src/types/'.
+- Use TypeScript generics for reusable components and functions.
+- Avoid 'any' type; prefer explicit types or unknown with type guards.
+
+## Styling with Tailwind CSS
+- Use Tailwind CSS utility classes for styling; avoid custom CSS files unless extending the theme.
+- Follow responsive design principles with Tailwind's breakpoint prefixes (sm:, md:, lg:, etc.).
+- Use Tailwind's dark mode utilities for dark theme support if needed.
+
+## Testing
+- Write tests for new components and stores following existing patterns.
+- Test business logic independently of UI components.
+- Use mock data and services for testing to avoid dependencies on external services.
+
+## PWA Features
+- Respect the service worker registration in '_app.tsx' for offline capabilities.
+- Test your app in offline mode to ensure it works properly.
+- Update the manifest.json for app-specific metadata if needed.
+
+## Extending the App
+- For new entities not covered by the initial setup, create corresponding types, stores, and API modules following existing patterns.
+- Avoid re-generating the app unless significant structural changes are needed.
