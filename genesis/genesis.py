@@ -45,6 +45,31 @@ class PromptAnalyzer:
             (r'persist|database|store|save', 'persistence'),
         ]
 
+        # Add patterns for common functionality
+        self.functionality_patterns = [
+            (r'filter|sort|search', 'filtering_and_sorting'),
+            (r'create|add|new', 'create_functionality'),
+            (r'edit|update|modify', 'edit_functionality'),
+            (r'delete|remove', 'delete_functionality'),
+            (r'view|display|show', 'view_functionality'),
+            (r'publish|draft', 'publishing_workflow'),
+            (r'rate|review|star', 'rating_and_reviews'),
+            (r'follow|subscribe|friend', 'social_connections'),
+            (r'import|export', 'data_import_export'),
+            (r'tag|label|categorize', 'tagging_system'),
+            (r'schedule|calendar|date', 'scheduling'),
+            (r'map|location|geo', 'geolocation'),
+            (r'report|analytics|chart', 'reporting'),
+        ]
+
+        # Add common relationships between entities
+        self.relationship_patterns = [
+            (r'(\w+)\s+belongs\s+to\s+(\w+)', 'belongs_to'),
+            (r'(\w+)\s+has\s+many\s+(\w+)', 'has_many'),
+            (r'(\w+)\s+has\s+one\s+(\w+)', 'has_one'),
+            (r'(\w+)\s+many\s+to\s+many\s+(\w+)', 'many_to_many'),
+        ]
+
     def analyze(self, description):
         """Analyze a description to extract entities and features"""
         description = description.lower()
@@ -60,6 +85,25 @@ class PromptAnalyzer:
         for pattern, feature in self.feature_patterns:
             if re.search(pattern, description):
                 features.append(feature)
+
+        # Extract functionality
+        functionality = []
+        for pattern, func_type in self.functionality_patterns:
+            if re.search(pattern, description):
+                functionality.append(func_type)
+
+        # Extract relationships
+        relationships = []
+        for pattern, rel_type in self.relationship_patterns:
+            matches = re.finditer(pattern, description)
+            for match in matches:
+                if match and len(match.groups()) >= 2:
+                    entity1, entity2 = match.groups()
+                    relationships.append({
+                        'type': rel_type,
+                        'entity1': entity1,
+                        'entity2': entity2
+                    })
 
         # Default features
         if not any(f == 'authentication' for f in features) and any(e.type == 'user' for e in entities):
@@ -83,11 +127,19 @@ class PromptAnalyzer:
             requires_supabase = True
             backend = True
 
+        # Make sure CRUD functionality is included by default
+        default_funcs = ['create_functionality', 'view_functionality', 'edit_functionality', 'delete_functionality']
+        for func in default_funcs:
+            if func not in functionality:
+                functionality.append(func)
+
         return {
             'name': 'app',
             'description': description,
             'entities': [{'name': e.name, 'type': e.type} for e in entities],
             'features': features,
+            'functionality': functionality,
+            'relationships': relationships,
             'tech_stack': tech_stack,
             'backend': backend,
             'requires_supabase': requires_supabase,
@@ -398,6 +450,15 @@ class AppGenerator:
         capitalized_name = entity_name.capitalize()
         plural_name = f"{entity_name}s" if not entity_name.endswith('s') else entity_name
 
+        # Get functionality for this entity
+        entity_functionality = self.spec.get('functionality', [])
+
+        # Get relationships for this entity
+        entity_relationships = []
+        for rel in self.spec.get('relationships', []):
+            if rel.get('entity1') == entity_name or rel.get('entity2') == entity_name:
+                entity_relationships.append(rel)
+
         print(f"Generating entity: {entity_name}")
 
         # Define template variables for substitution
@@ -420,6 +481,22 @@ class AppGenerator:
 """
         }
 
+        # Add functionality specific variables
+        template_vars["{{has_filtering}}"] = str('filtering_and_sorting' in entity_functionality).lower()
+        template_vars["{{has_publishing}}"] = str('publishing_workflow' in entity_functionality).lower()
+        template_vars["{{has_social}}"] = str('social_connections' in entity_functionality).lower()
+        template_vars["{{has_tags}}"] = str('tagging_system' in entity_functionality).lower()
+        template_vars["{{has_scheduling}}"] = str('scheduling' in entity_functionality).lower()
+        template_vars["{{has_geolocation}}"] = str('geolocation' in entity_functionality).lower()
+        template_vars["{{has_reporting}}"] = str('reporting' in entity_functionality).lower()
+        template_vars["{{has_ratings}}"] = str('rating_and_reviews' in entity_functionality).lower()
+
+        # Add relationship information
+        relationship_data = self._generate_relationship_code(entity_name, entity_relationships)
+        template_vars["{{entity_relationships}}"] = relationship_data.get('relationship_code', '')
+        template_vars["{{entity_imports}}"] = relationship_data.get('import_code', '')
+        template_vars["{{entity_fields}}"] = relationship_data.get('field_code', '')
+
         # Map of template paths to output paths
         template_mappings = {
             'types/entity.ts.template': f'src/types/{entity_name}.ts',
@@ -436,6 +513,23 @@ class AppGenerator:
             'app/api/entity/{id}/route.ts.template': f'src/app/api/{plural_name}/[id]/route.ts'
         }
 
+        # Add functionality specific templates
+        if 'filtering_and_sorting' in entity_functionality:
+            template_mappings['components/EntityFilter.tsx.template'] = f'src/components/{capitalized_name}Filter.tsx'
+
+        if 'publishing_workflow' in entity_functionality:
+            template_mappings['components/EntityPublish.tsx.template'] = f'src/components/{capitalized_name}Publish.tsx'
+
+        if 'rating_and_reviews' in entity_functionality:
+            template_mappings['components/EntityRating.tsx.template'] = f'src/components/{capitalized_name}Rating.tsx'
+
+        if 'tagging_system' in entity_functionality:
+            template_mappings['components/EntityTags.tsx.template'] = f'src/components/{capitalized_name}Tags.tsx'
+
+        # Add additional route templates for more functionality
+        if 'reporting' in entity_functionality:
+            template_mappings['app/entity/reports/page.tsx.template'] = f'src/app/{plural_name}/reports/page.tsx'
+
         # Add Supabase specific templates if required
         if self.spec.get('requires_supabase', False):
             template_mappings['services/supabaseEntityService.ts.template'] = f'src/services/{entity_name}SupabaseService.ts'
@@ -446,6 +540,61 @@ class AppGenerator:
             output_full_path = self.output_dir / output_rel_path
 
             self._process_template(template_full_path, output_full_path, template_vars)
+
+    def _generate_relationship_code(self, entity_name, relationships):
+        """Generate code snippets for entity relationships"""
+        import_code = ""
+        field_code = ""
+        relationship_code = ""
+
+        for rel in relationships:
+            rel_type = rel.get('type')
+            entity1 = rel.get('entity1')
+            entity2 = rel.get('entity2')
+
+            # Skip if relationship doesn't involve this entity
+            if entity1 != entity_name and entity2 != entity_name:
+                continue
+
+            # Generate appropriate imports
+            if entity1 == entity_name:
+                related_entity = entity2.capitalize()
+                import_code += f"import {{ {related_entity} }} from '@/types/{entity2}';\n"
+            else:
+                related_entity = entity1.capitalize()
+                import_code += f"import {{ {related_entity} }} from '@/types/{entity1}';\n"
+
+            # Generate field code based on relationship type
+            if rel_type == 'belongs_to':
+                if entity1 == entity_name:
+                    field_code += f"  {entity2}Id: string;\n"
+                    field_code += f"  {entity2}?: {entity2.capitalize()};\n"
+                    relationship_code += f"  // This {entity1} belongs to a {entity2}\n"
+
+            elif rel_type == 'has_many':
+                if entity1 == entity_name:
+                    field_code += f"  {entity2}s?: {entity2.capitalize()}[];\n"
+                    relationship_code += f"  // This {entity1} has many {entity2}s\n"
+
+            elif rel_type == 'has_one':
+                if entity1 == entity_name:
+                    field_code += f"  {entity2}Id?: string;\n"
+                    field_code += f"  {entity2}?: {entity2.capitalize()};\n"
+                    relationship_code += f"  // This {entity1} has one {entity2}\n"
+
+            elif rel_type == 'many_to_many':
+                if entity1 == entity_name:
+                    field_code += f"  {entity2}s?: {entity2.capitalize()}[];\n"
+                    relationship_code += f"  // This {entity1} has a many-to-many relationship with {entity2}s\n"
+                else:
+                    field_code += f"  {entity1}s?: {entity1.capitalize()}[];\n"
+                    relationship_code += f"  // This {entity_name} has a many-to-many relationship with {entity1}s\n"
+
+        return {
+            'import_code': import_code,
+            'field_code': field_code,
+            'relationship_code': relationship_code
+        }
 
     def _generate_supabase_config(self, template_path):
         """Generate Supabase configuration files"""
@@ -545,6 +694,7 @@ def main():
     # Main command
     parser.add_argument("name", help="Name of the application")
     parser.add_argument("--description", "-d", help="Description of the application")
+    parser.add_argument("--functionality", "-f", help="Detailed functionality description")
     parser.add_argument("--output", "-o", help="Output directory", default=".")
 
     args = parser.parse_args()
@@ -557,12 +707,25 @@ def main():
     if not description:
         description = input("Describe your application: ")
 
+    # Get detailed functionality description
+    functionality = args.functionality
+    if not functionality:
+        print("\nDescribe the functionality in more detail.")
+        print("Include relationships between entities (e.g., 'users have many posts', 'posts belong to users')")
+        print("Mention specific features like filtering, tagging, ratings, publishing workflow, etc.")
+        functionality = input("\nDetailed functionality: ")
+
+    # Combine descriptions for analysis
+    full_description = f"{description} {functionality}"
+
     print(f"Creating application '{app_name}' with description: {description}")
+    print(f"Implementing functionality: {functionality}")
 
     # Analyze the description
     analyzer = PromptAnalyzer()
-    spec = analyzer.analyze(description)
+    spec = analyzer.analyze(full_description)
     spec['name'] = app_name
+    spec['description'] = description  # Keep the original description for UI
 
     # Set the output directory
     output_dir = Path(args.output) / app_name

@@ -1,0 +1,112 @@
+import { useState } from 'react';
+import { Input } from "./ui/input";
+import { Button } from "./ui/button";
+import { Select } from "./ui/select";
+import {
+  Search,
+  SlidersHorizontal,
+  ArrowUpDown
+} from "lucide-react";
+import { cn } from "@/lib/utils";
+
+{{entity_imports}}
+
+type {{entity_type}}FilterProps = {
+  onFilterChange: (filters: any) => void;
+  className?: string;
+};
+
+export default function {{entity_type}}Filter({
+  onFilterChange,
+  className
+}: {{entity_type}}FilterProps) {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [sortField, setSortField] = useState('createdAt');
+  const [sortDirection, setSortDirection] = useState('desc');
+  const [isFiltersOpen, setIsFiltersOpen] = useState(false);
+
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchTerm(value);
+    applyFilters({ searchTerm: value });
+  };
+
+  const handleSortChange = (field: string) => {
+    const newDirection = field === sortField && sortDirection === 'asc' ? 'desc' : 'asc';
+    setSortField(field);
+    setSortDirection(newDirection);
+    applyFilters({ sortField: field, sortDirection: newDirection });
+  };
+
+  const applyFilters = (updatedFilters: any = {}) => {
+    const filters = {
+      searchTerm: updatedFilters.searchTerm ?? searchTerm,
+      sortField: updatedFilters.sortField ?? sortField,
+      sortDirection: updatedFilters.sortDirection ?? sortDirection,
+    };
+    onFilterChange(filters);
+  };
+
+  return (
+    <div className={cn("space-y-4", className)}>
+      <div className="flex items-center gap-2">
+        <div className="relative flex-1">
+          <Search className="absolute left-2 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
+          <Input
+            placeholder="Search {{plural_name}}..."
+            value={searchTerm}
+            onChange={handleSearch}
+            className="pl-8"
+          />
+        </div>
+        <Button
+          variant="outline"
+          size="icon"
+          onClick={() => setIsFiltersOpen(!isFiltersOpen)}
+          aria-label="Toggle filters"
+        >
+          <SlidersHorizontal className="h-4 w-4" />
+        </Button>
+      </div>
+
+      {isFiltersOpen && (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4 border rounded-md bg-gray-50">
+          <div>
+            <h4 className="font-medium mb-2 text-sm">Sort by</h4>
+            <div className="space-y-2">
+              <Button
+                variant="ghost"
+                className="w-full justify-start text-left font-normal"
+                onClick={() => handleSortChange('name')}
+              >
+                Name
+                {sortField === 'name' && (
+                  <ArrowUpDown className={cn(
+                    "ml-2 h-4 w-4",
+                    sortDirection === 'asc' ? "text-green-500" : "text-red-500"
+                  )} />
+                )}
+              </Button>
+              <Button
+                variant="ghost"
+                className="w-full justify-start text-left font-normal"
+                onClick={() => handleSortChange('createdAt')}
+              >
+                Date Created
+                {sortField === 'createdAt' && (
+                  <ArrowUpDown className={cn(
+                    "ml-2 h-4 w-4",
+                    sortDirection === 'asc' ? "text-green-500" : "text-red-500"
+                  )} />
+                )}
+              </Button>
+              {/* Add more sort options based on entity fields */}
+            </div>
+          </div>
+
+          {/* Add additional filter controls here specific to this entity */}
+        </div>
+      )}
+    </div>
+  );
+}

@@ -1,8 +1,42 @@
+{{entity_imports}}
+
 export interface {{entity_type}} {
   id: string;
   name: string;
-  description: string;
+  description?: string;
   createdAt: string;
   updatedAt: string;
   // Add additional properties based on entity analysis
+  {{entity_fields}}
+  {{#if {{has_publishing}} == "true"}}
+    status: 'draft' | 'published' | 'scheduled';
+    scheduledPublishTime?: string;
+    publishedAt?: string;
+  {{/if}}
+  {{#if {{has_tags}} == "true"}}
+    tags?: string[];
+  {{/if}}
+  {{#if {{has_ratings}} == "true"}}
+    rating?: number;
+    ratingCount?: number;
+    reviews?: {
+      id: string;
+      userId: string;
+      userName?: string;
+      rating: number;
+      comment?: string;
+      createdAt: string;
+    }[];
+  {{/if}}
+  {{#if {{has_geolocation}} == "true"}}
+    location?: {
+      latitude: number;
+      longitude: number;
+      address?: string;
+    };
+  {{/if}}
+  {{entity_relationships}}
 }
+
+export type New{{entity_type}} = Omit<{{entity_type}}, 'id' | 'createdAt' | 'updatedAt'>;
+export type Update{{entity_type}} = Partial<{{entity_type}}>;
