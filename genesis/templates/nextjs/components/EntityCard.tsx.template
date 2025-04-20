@@ -38,48 +38,43 @@ export default function {{entity_type}}Card({ {{entity_name}} }: {{entity_type}}
   };
 
   return (
-    <Card className="overflow-hidden transition-all hover:shadow-md">
-      <CardHeader className="pb-2">
-        <CardTitle>{{{entity_name}}.name}</CardTitle>
+    <Card className="hover:shadow-md transition-shadow">
+      <CardHeader>
+        <CardTitle className="line-clamp-1">{{{entity_name}}.name}</CardTitle>
         <CardDescription className="line-clamp-2">
-          {{{entity_name}}.description || 'No description'}
+          {{{entity_name}}.description || 'No description provided'}
         </CardDescription>
       </CardHeader>
-
-      <CardContent className="text-sm text-muted-foreground">
-        <div className="space-y-1">
-          <p className="text-xs text-muted-foreground">
-            Created: {new Date({{entity_name}}.createdAt).toLocaleDateString()}
-          </p>
-          <p className="text-xs text-muted-foreground">
-            Last updated: {new Date({{entity_name}}.updatedAt).toLocaleDateString()}
-          </p>
-        </div>
+      <CardContent>
+        <p className="text-sm text-gray-500">
+          Created: {new Date({{entity_name}}.createdAt).toLocaleDateString()}
+        </p>
+        <p className="text-sm text-gray-500">
+          Updated: {new Date({{entity_name}}.updatedAt).toLocaleDateString()}
+        </p>
       </CardContent>
-
-      <CardFooter className="flex justify-between pt-4 gap-2">
-        <Button variant="outline" size="sm" asChild>
-          <Link href={`/{{entity_name}}s/${{{entity_name}}.id}`}>
-            <Eye className="mr-2 h-4 w-4" />
+      <CardFooter className="flex justify-between">
+        <Link href={`/{{plural_name}}/${{{entity_name}}.id}`}>
+          <Button variant="outline" size="sm" className="flex items-center gap-1">
+            <Eye className="h-4 w-4" />
             View
-          </Link>
-        </Button>
-
-        <div className="flex gap-2">
-          <Button variant="outline" size="sm" asChild>
-            <Link href={`/{{entity_name}}s/${{{entity_name}}.id}/edit`}>
-              <Edit className="mr-2 h-4 w-4" />
-              Edit
-            </Link>
           </Button>
-
+        </Link>
+        <div className="flex space-x-2">
+          <Link href={`/{{plural_name}}/${{{entity_name}}.id}/edit`}>
+            <Button variant="outline" size="sm" className="flex items-center gap-1">
+              <Edit className="h-4 w-4" />
+              Edit
+            </Button>
+          </Link>
           <Button
             variant="destructive"
             size="sm"
             onClick={handleDelete}
             disabled={isDeleting}
+            className="flex items-center gap-1"
           >
-            <Trash2 className="mr-2 h-4 w-4" />
+            <Trash2 className="h-4 w-4" />
             {isDeleting ? 'Deleting...' : 'Delete'}
           </Button>
         </div>

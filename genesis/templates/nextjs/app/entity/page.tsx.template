@@ -4,15 +4,17 @@ import { useEffect } from 'react';
 import { use{{entity_type}}Store } from '../../store/{{entity_name}}Store';
 import {{entity_type}}Card from '../../components/{{entity_type}}Card';
 import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import { PlusCircle } from 'lucide-react';
 
-export default function {{entity_type}}Page() {
-  const { {{entity_name}}s, loading, error, fetch{{entity_type}}s } = use{{entity_type}}Store();
+export default function {{entity_type}}ListPage() {
+  const { {{entity_name}}s, isLoading, error, fetch{{entity_type}}s } = use{{entity_type}}Store();
 
   useEffect(() => {
     fetch{{entity_type}}s();
   }, [fetch{{entity_type}}s]);
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="flex justify-center items-center h-48">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
@@ -33,11 +35,11 @@ export default function {{entity_type}}Page() {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">{{entity_type}}s</h1>
-        <Link
-          href="/{{entity_name}}/new"
-          className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-dark"
-        >
-          Add New {{entity_type}}
+        <Link href="/{{plural_name}}/new">
+          <Button className="flex items-center gap-1">
+            <PlusCircle className="h-4 w-4" />
+            Add {{entity_type}}
+          </Button>
         </Link>
       </div>
 
@@ -51,6 +53,12 @@ export default function {{entity_type}}Page() {
         <div className="bg-gray-50 p-8 rounded-md text-center border border-gray-200">
           <h2 className="text-gray-600 text-lg font-semibold">No {{entity_name}}s found</h2>
           <p className="text-gray-500 mt-2">Create your first {{entity_name}} to get started.</p>
+          <Link href="/{{plural_name}}/new" className="mt-4 inline-block">
+            <Button variant="outline" className="flex items-center gap-1">
+              <PlusCircle className="h-4 w-4" />
+              Create {{entity_type}}
+            </Button>
+          </Link>
         </div>
       )}
     </div>

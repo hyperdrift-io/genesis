@@ -23,7 +23,7 @@ interface {{entity_type}}State {
   fetch{{entity_type}}s: () => Promise<void>;
   fetch{{entity_type}}ById: (id: string) => Promise<void>;
   create{{entity_type}}: (data: Partial<{{entity_type}}>) => Promise<void>;
-  update{{entity_type}}: ({{entity_name}}: {{entity_type}}) => Promise<void>;
+  update{{entity_type}}: (id: string, data: Partial<{{entity_type}}>) => Promise<void>;
   delete{{entity_type}}: (id: string) => Promise<void>;
 }
 
@@ -75,10 +75,10 @@ export const use{{entity_type}}Store = create<{{entity_type}}State>((set, get) =
     }
   },
 
-  update{{entity_type}}: async ({{entity_name}}: {{entity_type}}) => {
+  update{{entity_type}}: async (id: string, data: Partial<{{entity_type}}>) => {
     set({ isLoading: true, error: null });
     try {
-      const updated{{entity_type}} = await {{entity_name}}Service.update{{entity_type}}({{entity_name}});
+      const updated{{entity_type}} = await {{entity_name}}Service.update{{entity_type}}(id, data);
       set(state => ({
         {{entity_name}}s: state.{{entity_name}}s.map(item =>
           item.id === updated{{entity_type}}.id ? updated{{entity_type}} : item

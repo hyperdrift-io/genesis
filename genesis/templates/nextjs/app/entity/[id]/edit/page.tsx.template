@@ -1,9 +1,11 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { use{{entity_type}}Store } from '../../../../store/{{entity_name}}Store';
 import {{entity_type}}Form from '../../../../components/{{entity_type}}Form';
+import Link from 'next/link';
+import { ArrowLeft } from 'lucide-react';
 
 export default function Edit{{entity_type}}Page() {
   const router = useRouter();
@@ -11,20 +13,25 @@ export default function Edit{{entity_type}}Page() {
 
   const {
     {{entity_name}}s,
-    loading,
+    selected{{entity_type}},
+    isLoading,
     error,
     fetch{{entity_type}}ById
   } = use{{entity_type}}Store();
 
-  const {{entity_name}} = {{entity_name}}s.find(item => item.id === id);
+  const {{entity_name}} = selected{{entity_type}} || {{entity_name}}s.find(item => item.id === id);
 
   useEffect(() => {
-    if (id) {
-      fetch{{entity_type}}ById(id as string);
+    if (id && typeof id === 'string') {
+      fetch{{entity_type}}ById(id);
     }
   }, [id, fetch{{entity_type}}ById]);
 
-  if (loading) {
+  const handleSuccess = () => {
+    router.push(`/{{plural_name}}/${id}`);
+  };
+
+  if (isLoading) {
     return (
       <div className="flex justify-center items-center h-48">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
@@ -51,21 +58,17 @@ export default function Edit{{entity_type}}Page() {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Edit {{entity_type}}</h1>
-        <button
-          onClick={() => router.back()}
-          className="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600"
+    <div className="max-w-4xl mx-auto">
+      <div className="mb-4">
+        <Link
+          href={`/{{plural_name}}/${id}`}
+          className="text-blue-600 hover:text-blue-800 flex items-center"
         >
-          Cancel
-        </button>
+          <ArrowLeft className="w-4 h-4 mr-1" /> Back to {{entity_name}} details
+        </Link>
       </div>
 
-      <{{entity_type}}Form
-        initialData={{{entity_name}}}
-        onSuccess={() => router.push(`/{{entity_name}}/${id}`)}
-      />
+      <{{entity_type}}Form initialData={{{entity_name}}} onSuccess={handleSuccess} />
     </div>
   );
 }

@@ -64,41 +64,32 @@ export default function {{entity_type}}Form({ initialData, onSuccess }: {{entity
 
     try {
       if (isEditing && initialData) {
-        await update{{entity_type}}({
-          ...initialData,
-          ...formData,
-        });
+        await update{{entity_type}}(initialData.id, formData);
       } else {
-        await create{{entity_type}}(formData as {{entity_type}});
+        await create{{entity_type}}(formData);
       }
 
       if (onSuccess) {
         onSuccess();
       }
     } catch (err) {
-      // Error will be handled by the store
+      console.error('Form submission error:', err);
     }
   };
 
   return (
-    <Card>
+    <Card className="w-full">
       <CardHeader>
-        <CardTitle>{isEditing ? 'Edit' : 'Create'} {{entity_type}}</CardTitle>
+        <CardTitle>{isEditing ? 'Edit' : 'New'} {{entity_type}}</CardTitle>
         <CardDescription>
           {isEditing
-            ? `Update your ${initialData?.name} details`
-            : `Enter the information for your new {{entity_name}}`}
+            ? 'Update the information for this {{entity_name}}.'
+            : 'Enter information to create a new {{entity_name}}.'
+          }
         </CardDescription>
       </CardHeader>
-
       <form onSubmit={handleSubmit}>
         <CardContent className="space-y-4">
-          {error && (
-            <div className="bg-destructive/10 text-destructive p-3 rounded-md text-sm">
-              {error}
-            </div>
-          )}
-
           <div className="space-y-2">
             <Label htmlFor="name">Name</Label>
             <Input
@@ -106,11 +97,11 @@ export default function {{entity_type}}Form({ initialData, onSuccess }: {{entity
               name="name"
               value={formData.name}
               onChange={handleChange}
-              placeholder="Enter name"
-              className={errors.name ? "border-destructive" : ""}
+              placeholder="Enter a name"
+              className={errors.name ? "border-red-500" : ""}
             />
             {errors.name && (
-              <p className="text-destructive text-sm">{errors.name}</p>
+              <p className="text-sm text-red-500">{errors.name}</p>
             )}
           </div>
 
@@ -121,18 +112,34 @@ export default function {{entity_type}}Form({ initialData, onSuccess }: {{entity
               name="description"
               value={formData.description}
               onChange={handleChange}
-              placeholder="Enter description"
+              placeholder="Enter a description"
+              className={errors.description ? "border-red-500" : ""}
               rows={4}
-              className={errors.description ? "border-destructive" : ""}
             />
             {errors.description && (
-              <p className="text-destructive text-sm">{errors.description}</p>
+              <p className="text-sm text-red-500">{errors.description}</p>
             )}
           </div>
-        </CardContent>
 
-        <CardFooter className="flex justify-end">
-          <Button type="submit" disabled={isLoading}>
+          {/* Display any API error */}
+          {error && (
+            <div className="bg-red-50 p-3 rounded border border-red-200">
+              <p className="text-sm text-red-600">{error}</p>
+            </div>
+          )}
+        </CardContent>
+        <CardFooter className="flex justify-between">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => onSuccess?.()}
+          >
+            Cancel
+          </Button>
+          <Button
+            type="submit"
+            disabled={isLoading}
+          >
             {isLoading ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -141,7 +148,7 @@ export default function {{entity_type}}Form({ initialData, onSuccess }: {{entity
             ) : (
               <>
                 <Save className="mr-2 h-4 w-4" />
-                {isEditing ? 'Update {{entity_type}}' : 'Create {{entity_type}}'}
+                {isEditing ? 'Update' : 'Create'}
               </>
             )}
           </Button>

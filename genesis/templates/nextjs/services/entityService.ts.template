@@ -75,18 +75,19 @@ export async function create{{entity_type}}(data: Partial<{{entity_type}}>): Pro
 /**
  * Update a {{entity_name}} in local storage
  */
-export async function update{{entity_type}}({{entity_name}}: {{entity_type}}): Promise<{{entity_type}}> {
+export async function update{{entity_type}}(id: string, data: Partial<{{entity_type}}>): Promise<{{entity_type}}> {
   try {
     if (typeof window !== 'undefined') {
       const items = await getAll{{entity_type}}s();
-      const index = items.findIndex(item => item.id === {{entity_name}}.id);
+      const index = items.findIndex(item => item.id === id);
 
       if (index === -1) {
-        throw new Error(`{{entity_type}} with ID ${{{entity_name}}.id} not found`);
+        throw new Error(`{{entity_type}} with ID ${id} not found`);
       }
 
       const updatedItem = {
-        ...{{entity_name}},
+        ...items[index],
+        ...data,
         updatedAt: new Date().toISOString()
       };
 
@@ -97,7 +98,7 @@ export async function update{{entity_type}}({{entity_name}}: {{entity_type}}): P
     }
     throw new Error('Cannot access localStorage (not in browser)');
   } catch (error) {
-    console.error(`Failed to update {{entity_name}} with ID ${{{entity_name}}.id}:`, error);
+    console.error(`Failed to update {{entity_name}} with ID ${id}:`, error);
     throw error;
   }
 }

@@ -210,7 +210,14 @@ class AppGenerator:
         for entity in self.spec.get('entities', []):
             entity_name = entity.get('name', 'item')
             capitalized_name = entity_name.capitalize()
-            plural_name = f"{entity_name}s" if not entity_name.endswith('s') else entity_name
+
+            # Handle special cases of pluralization
+            if entity_name.endswith('y'):
+                plural_name = f"{entity_name[:-1]}ies"
+            elif entity_name.endswith('s'):
+                plural_name = entity_name
+            else:
+                plural_name = f"{entity_name}s"
 
             # Add entity link for homepage
             entity_links += f"""
@@ -318,7 +325,6 @@ class AppGenerator:
                     "class-variance-authority": "^0.7.0",
                     "clsx": "^2.1.0",
                     "tailwind-merge": "^2.2.0",
-                    "tailwindcss-animate": "^1.0.7",
                     "@radix-ui/react-slot": "^1.0.2",
                     "@radix-ui/react-label": "^2.0.2"
                 },
@@ -327,7 +333,8 @@ class AppGenerator:
                     "@types/react": "^18.2.48",
                     "@types/node": "^20.11.0",
                     "@types/react-dom": "^18.2.18",
-                    "tailwindcss": "^4.0.0-alpha.2",
+                    "tailwindcss": "^3.4.1",
+                    "tailwindcss-animate": "^1.0.7",
                     "autoprefixer": "^10.4.16"
                 },
                 "engines": {
@@ -364,7 +371,6 @@ class AppGenerator:
                 'class-variance-authority': '^0.7.0',
                 'clsx': '^2.1.0',
                 'tailwind-merge': '^2.2.0',
-                'tailwindcss-animate': '^1.0.7',
                 '@radix-ui/react-slot': '^1.0.2',
                 '@radix-ui/react-label': '^2.0.2'
             })
@@ -377,7 +383,8 @@ class AppGenerator:
                 package_json['devDependencies'] = {}
 
             package_json['devDependencies'].update({
-                'tailwindcss': '^4.0.0-alpha.2',
+                'tailwindcss': '^3.4.1',
+                'tailwindcss-animate': '^1.0.7',
                 'autoprefixer': '^10.4.16'
             })
 
@@ -448,7 +455,14 @@ class AppGenerator:
                 break
 
         capitalized_name = entity_name.capitalize()
-        plural_name = f"{entity_name}s" if not entity_name.endswith('s') else entity_name
+
+        # Handle special cases of pluralization
+        if entity_name.endswith('y'):
+            plural_name = f"{entity_name[:-1]}ies"
+        elif entity_name.endswith('s'):
+            plural_name = entity_name
+        else:
+            plural_name = f"{entity_name}s"
 
         # Get functionality for this entity
         entity_functionality = self.spec.get('functionality', [])
@@ -496,6 +510,7 @@ class AppGenerator:
         template_vars["{{entity_relationships}}"] = relationship_data.get('relationship_code', '')
         template_vars["{{entity_imports}}"] = relationship_data.get('import_code', '')
         template_vars["{{entity_fields}}"] = relationship_data.get('field_code', '')
+        template_vars["{{plural_name}}"] = plural_name
 
         # Map of template paths to output paths
         template_mappings = {
@@ -656,8 +671,8 @@ This project uses Supabase for backend services. To set up:
 
             # Process conditionals ({{#if condition}} ... {{else}} ... {{/if}})
             # This is a simple implementation of conditional processing
-            for condition_match in re.finditer(r'{{#if\s+([^}]+)}}\s*\n(.*?)\s*{{else}}\s*\n(.*?)\s*{{\/if}}',
-                                           content, re.DOTALL):
+            pattern = r'{{#if\s+([^}]+)}}\s*\n(.*?)\s*{{else}}\s*\n(.*?)\s*{{\/if}}'
+            for condition_match in re.finditer(pattern, content, re.DOTALL):
                 condition, if_block, else_block = condition_match.groups()
 
                 # Evaluate the condition
@@ -667,10 +682,19 @@ This project uses Supabase for backend services. To set up:
                     left = left.strip()
                     right = right.strip(' "\'')
 
-                    # Get the actual value from template_vars
-                    if left in template_vars:
-                        left_value = template_vars[left]
-                        condition_value = (left_value == right)
+                    # Check for template variable in left side
+                    if left.startswith('{{') and left.endswith('}}'):
+                        var_name = left
+                        if var_name in template_vars:
+                            left_value = template_vars[var_name]
+                            condition_value = (left_value == right)
+                    else:
+                        # Extract variable value if it exists
+                        for var, value in template_vars.items():
+                            if var[2:-2] == left:  # Remove {{ }} to match
+                                left_value = value
+                                condition_value = (left_value == right)
+                                break
 
                 # Replace with the appropriate block
                 replacement = if_block if condition_value else else_block

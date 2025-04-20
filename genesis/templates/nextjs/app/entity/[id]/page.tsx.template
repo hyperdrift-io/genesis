@@ -3,6 +3,10 @@
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { use{{entity_type}}Store } from '../../../store/{{entity_name}}Store';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { ArrowLeft, Edit, Trash2 } from 'lucide-react';
+import Link from 'next/link';
 
 export default function {{entity_type}}Detail() {
   const router = useRouter();
@@ -11,17 +15,18 @@ export default function {{entity_type}}Detail() {
 
   const {
     {{entity_name}}s,
-    loading,
+    selected{{entity_type}},
+    isLoading,
     error,
     fetch{{entity_type}}ById,
     delete{{entity_type}}
   } = use{{entity_type}}Store();
 
-  const {{entity_name}} = {{entity_name}}s.find(item => item.id === id);
+  const {{entity_name}} = selected{{entity_type}} || {{entity_name}}s.find(item => item.id === id);
 
   useEffect(() => {
-    if (id) {
-      fetch{{entity_type}}ById(id as string);
+    if (id && typeof id === 'string') {
+      fetch{{entity_type}}ById(id);
     }
   }, [id, fetch{{entity_type}}ById]);
 
@@ -30,7 +35,7 @@ export default function {{entity_type}}Detail() {
       setIsDeleting(true);
       try {
         await delete{{entity_type}}(id as string);
-        router.push('/{{entity_name}}');
+        router.push('/{{entity_name}}s');
       } catch (err) {
         setIsDeleting(false);
         alert('Failed to delete {{entity_name}}');
@@ -38,7 +43,7 @@ export default function {{entity_type}}Detail() {
     }
   };
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="flex justify-center items-center h-48">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
@@ -65,56 +70,57 @@ export default function {{entity_type}}Detail() {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">{{{entity_name}}.name}</h1>
-        <div className="flex space-x-2">
-          <button
-            onClick={() => router.push(`/{{entity_name}}/${id}/edit`)}
-            className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
-          >
-            Edit
-          </button>
-          <button
-            onClick={handleDelete}
-            disabled={isDeleting}
-            className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 disabled:bg-red-300"
-          >
-            {isDeleting ? 'Deleting...' : 'Delete'}
-          </button>
-          <button
-            onClick={() => router.push('/{{entity_name}}')}
-            className="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600"
-          >
-            Back
-          </button>
-        </div>
+    <div className="max-w-4xl mx-auto">
+      <div className="mb-4">
+        <Link
+          href="/{{entity_name}}s"
+          className="text-blue-600 hover:text-blue-800 flex items-center"
+        >
+          <ArrowLeft className="w-4 h-4 mr-1" /> Back to {{entity_type}}s
+        </Link>
       </div>
 
-      <div className="bg-white p-6 rounded-lg shadow-md">
-        <dl className="grid grid-cols-1 gap-4">
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex justify-between items-center">
+            <span>{{{entity_name}}.name}</span>
+            <div className="flex space-x-2">
+              <Link
+                href={`/{{entity_name}}s/${{{entity_name}}.id}/edit`}
+                className="p-2 bg-blue-50 text-blue-600 rounded-md hover:bg-blue-100 transition-colors"
+              >
+                <Edit className="w-5 h-5" />
+              </Link>
+              <Button
+                variant="destructive"
+                size="icon"
+                onClick={handleDelete}
+                disabled={isDeleting}
+              >
+                <Trash2 className="w-5 h-5" />
+              </Button>
+            </div>
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
           <div>
-            <dt className="text-sm font-medium text-gray-500">ID</dt>
-            <dd className="mt-1 text-gray-900 break-all">{{{entity_name}}.id}</dd>
+            <h3 className="text-sm font-medium text-gray-500">Description</h3>
+            <p className="mt-1">{{{entity_name}}.description || 'No description provided'}</p>
           </div>
+
           <div>
-            <dt className="text-sm font-medium text-gray-500">Name</dt>
-            <dd className="mt-1 text-gray-900">{{{entity_name}}.name}</dd>
+            <h3 className="text-sm font-medium text-gray-500">Created</h3>
+            <p className="mt-1">{new Date({{entity_name}}.createdAt).toLocaleString()}</p>
           </div>
+
           <div>
-            <dt className="text-sm font-medium text-gray-500">Description</dt>
-            <dd className="mt-1 text-gray-900">{{{entity_name}}.description || 'No description provided'}</dd>
+            <h3 className="text-sm font-medium text-gray-500">Last Updated</h3>
+            <p className="mt-1">{new Date({{entity_name}}.updatedAt).toLocaleString()}</p>
           </div>
-          <div>
-            <dt className="text-sm font-medium text-gray-500">Created</dt>
-            <dd className="mt-1 text-gray-900">{new Date({{entity_name}}.createdAt).toLocaleString()}</dd>
-          </div>
-          <div>
-            <dt className="text-sm font-medium text-gray-500">Last Updated</dt>
-            <dd className="mt-1 text-gray-900">{new Date({{entity_name}}.updatedAt).toLocaleString()}</dd>
-          </div>
-        </dl>
-      </div>
+
+          {/* Additional entity-specific fields would go here */}
+        </CardContent>
+      </Card>
     </div>
   );
 }
