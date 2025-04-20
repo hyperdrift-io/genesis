@@ -40,9 +40,9 @@ export default function {{entity_type}}Card({ {{entity_name}} }: {{entity_type}}
   return (
     <Card className="hover:shadow-md transition-shadow">
       <CardHeader>
-        <CardTitle className="line-clamp-1">{{{entity_name}}.name}</CardTitle>
+        <CardTitle className="line-clamp-1">{{ entity_name }}.name</CardTitle>
         <CardDescription className="line-clamp-2">
-          {{{entity_name}}.description || 'No description provided'}
+          {{ entity_name }}.description || 'No description provided'
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -54,14 +54,14 @@ export default function {{entity_type}}Card({ {{entity_name}} }: {{entity_type}}
         </p>
       </CardContent>
       <CardFooter className="flex justify-between">
-        <Link href={`/{{plural_name}}/${{{entity_name}}.id}`}>
+        <Link href={`/{{ plural_name }}/{{ entity_name }}.id`}>
           <Button variant="outline" size="sm" className="flex items-center gap-1">
             <Eye className="h-4 w-4" />
             View
           </Button>
         </Link>
         <div className="flex space-x-2">
-          <Link href={`/{{plural_name}}/${{{entity_name}}.id}/edit`}>
+          <Link href={`/{{ plural_name }}/{{ entity_name }}.id/edit`}>
             <Button variant="outline" size="sm" className="flex items-center gap-1">
               <Edit className="h-4 w-4" />
               Edit

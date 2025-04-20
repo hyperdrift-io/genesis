@@ -8,15 +8,15 @@ export interface {{entity_type}} {
   updatedAt: string;
   // Add additional properties based on entity analysis
   {{entity_fields}}
-  {{#if {{has_publishing}} == "true"}}
+  {% if has_publishing %}
     status: 'draft' | 'published' | 'scheduled';
     scheduledPublishTime?: string;
     publishedAt?: string;
-  {{/if}}
-  {{#if {{has_tags}} == "true"}}
+  {% endif %}
+  {% if has_tags %}
     tags?: string[];
-  {{/if}}
-  {{#if {{has_ratings}} == "true"}}
+  {% endif %}
+  {% if has_ratings %}
     rating?: number;
     ratingCount?: number;
     reviews?: {
@@ -27,14 +27,14 @@ export interface {{entity_type}} {
       comment?: string;
       createdAt: string;
     }[];
-  {{/if}}
-  {{#if {{has_geolocation}} == "true"}}
+  {% endif %}
+  {% if has_geolocation %}
     location?: {
       latitude: number;
       longitude: number;
       address?: string;
     };
-  {{/if}}
+  {% endif %}
   {{entity_relationships}}
 }
 

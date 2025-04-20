@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
 import { create } from 'zustand';
-import { {{entity_type}} } from '@/types/{{entity_name}}';
-{{#if {{requires_supabase}} == "true"}}
-import * as {{entity_name}}Service from '@/services/{{entity_name}}SupabaseService';
-{{else}}
-import * as {{entity_name}}Service from '@/services/{{entity_name}}Service';
-{{/if}}
+import { {{ entity_type }} } from '@/types/{{ entity_name }}';
+{% if requires_supabase %}
+import * as {{ entity_name }}Service from '@/services/{{ entity_name }}SupabaseService';
+{% else %}
+import * as {{ entity_name }}Service from '@/services/{{ entity_name }}Service';
+{% endif %}
 
 // CURSOR_RULE: If persistence is needed:
 // 1. Add Supabase dependencies to package.json
@@ -14,101 +14,101 @@ import * as {{entity_name}}Service from '@/services/{{entity_name}}Service';
 // 3. Implement supabaseEntityService.ts for this entity
 // 4. Update this import to use the Supabase service
 
-interface {{entity_type}}State {
-  {{entity_name}}s: {{entity_type}}[];
-  selected{{entity_type}}: {{entity_type}} | null;
+interface {{ entity_type }}State {
+  {{ entity_name }}s: {{ entity_type }}[];
+  selected{{ entity_type }}: {{ entity_type }} | null;
   isLoading: boolean;
   error: string | null;
 
-  fetch{{entity_type}}s: () => Promise<void>;
-  fetch{{entity_type}}ById: (id: string) => Promise<void>;
-  create{{entity_type}}: (data: Partial<{{entity_type}}>) => Promise<void>;
-  update{{entity_type}}: (id: string, data: Partial<{{entity_type}}>) => Promise<void>;
-  delete{{entity_type}}: (id: string) => Promise<void>;
+  fetch{{ entity_type }}s: () => Promise<void>;
+  fetch{{ entity_type }}ById: (id: string) => Promise<void>;
+  create{{ entity_type }}: (data: Partial<{{ entity_type }}>) => Promise<void>;
+  update{{ entity_type }}: (id: string, data: Partial<{{ entity_type }}>) => Promise<void>;
+  delete{{ entity_type }}: (id: string) => Promise<void>;
 }
 
-export const use{{entity_type}}Store = create<{{entity_type}}State>((set, get) => ({
-  {{entity_name}}s: [],
-  selected{{entity_type}}: null,
+export const use{{ entity_type }}Store = create<{{ entity_type }}State>((set, get) => ({
+  {{ entity_name }}s: [],
+  selected{{ entity_type }}: null,
   isLoading: false,
   error: null,
 
-  fetch{{entity_type}}s: async () => {
+  fetch{{ entity_type }}s: async () => {
     set({ isLoading: true, error: null });
     try {
-      const {{entity_name}}s = await {{entity_name}}Service.getAll{{entity_type}}s();
-      set({ {{entity_name}}s, isLoading: false });
+      const {{ entity_name }}s = await {{ entity_name }}Service.getAll{{ entity_type }}s();
+      set({ {{ entity_name }}s, isLoading: false });
     } catch (error) {
       set({
         isLoading: false,
-        error: error instanceof Error ? error.message : 'Failed to fetch {{entity_name}}s'
+        error: error instanceof Error ? error.message : 'Failed to fetch {{ entity_name }}s'
       });
     }
   },
 
-  fetch{{entity_type}}ById: async (id: string) => {
+  fetch{{ entity_type }}ById: async (id: string) => {
     set({ isLoading: true, error: null });
     try {
-      const {{entity_name}} = await {{entity_name}}Service.get{{entity_type}}ById(id);
-      set({ selected{{entity_type}}: {{entity_name}}, isLoading: false });
+      const {{ entity_name }} = await {{ entity_name }}Service.get{{ entity_type }}ById(id);
+      set({ selected{{ entity_type }}: {{ entity_name }}, isLoading: false });
     } catch (error) {
       set({
         isLoading: false,
-        error: error instanceof Error ? error.message : `Failed to fetch {{entity_name}} with id ${id}`
+        error: error instanceof Error ? error.message : `Failed to fetch {{ entity_name }} with id ${id}`
       });
     }
   },
 
-  create{{entity_type}}: async (data: Partial<{{entity_type}}>) => {
+  create{{ entity_type }}: async (data: Partial<{{ entity_type }}>) => {
     set({ isLoading: true, error: null });
     try {
-      const new{{entity_type}} = await {{entity_name}}Service.create{{entity_type}}(data);
+      const new{{ entity_type }} = await {{ entity_name }}Service.create{{ entity_type }}(data);
       set(state => ({
-        {{entity_name}}s: [...state.{{entity_name}}s, new{{entity_type}}],
+        {{ entity_name }}s: [...state.{{ entity_name }}s, new{{ entity_type }}],
         isLoading: false
       }));
     } catch (error) {
       set({
         isLoading: false,
-        error: error instanceof Error ? error.message : 'Failed to create {{entity_name}}'
+        error: error instanceof Error ? error.message : 'Failed to create {{ entity_name }}'
       });
     }
   },
 
-  update{{entity_type}}: async (id: string, data: Partial<{{entity_type}}>) => {
+  update{{ entity_type }}: async (id: string, data: Partial<{{ entity_type }}>) => {
     set({ isLoading: true, error: null });
     try {
-      const updated{{entity_type}} = await {{entity_name}}Service.update{{entity_type}}(id, data);
+      const updated{{ entity_type }} = await {{ entity_name }}Service.update{{ entity_type }}(id, data);
       set(state => ({
-        {{entity_name}}s: state.{{entity_name}}s.map(item =>
-          item.id === updated{{entity_type}}.id ? updated{{entity_type}} : item
+        {{ entity_name }}s: state.{{ entity_name }}s.map(item =>
+          item.id === updated{{ entity_type }}.id ? updated{{ entity_type }} : item
         ),
-        selected{{entity_type}}: state.selected{{entity_type}}?.id === updated{{entity_type}}.id
-          ? updated{{entity_type}}
-          : state.selected{{entity_type}},
+        selected{{ entity_type }}: state.selected{{ entity_type }}?.id === updated{{ entity_type }}.id
+          ? updated{{ entity_type }}
+          : state.selected{{ entity_type }},
         isLoading: false
       }));
     } catch (error) {
       set({
         isLoading: false,
-        error: error instanceof Error ? error.message : `Failed to update {{entity_name}}`
+        error: error instanceof Error ? error.message : `Failed to update {{ entity_name }}`
       });
     }
   },
 
-  delete{{entity_type}}: async (id: string) => {
+  delete{{ entity_type }}: async (id: string) => {
     set({ isLoading: true, error: null });
     try {
-      await {{entity_name}}Service.delete{{entity_type}}(id);
+      await {{ entity_name }}Service.delete{{ entity_type }}(id);
       set(state => ({
-        {{entity_name}}s: state.{{entity_name}}s.filter({{entity_name}} => {{entity_name}}.id !== id),
-        selected{{entity_type}}: state.selected{{entity_type}}?.id === id ? null : state.selected{{entity_type}},
+        {{ entity_name }}s: state.{{ entity_name }}s.filter({{ entity_name }} => {{ entity_name }}.id !== id),
+        selected{{ entity_type }}: state.selected{{ entity_type }}?.id === id ? null : state.selected{{ entity_type }},
         isLoading: false
       }));
     } catch (error) {
       set({
         isLoading: false,
-        error: error instanceof Error ? error.message : `Failed to delete {{entity_name}}`
+        error: error instanceof Error ? error.message : `Failed to delete {{ entity_name }}`
       });
     }
   }

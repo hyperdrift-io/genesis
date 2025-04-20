@@ -43,13 +43,13 @@ export default function {{entity_type}}ListPage() {
         </Link>
       </div>
 
-      {{{entity_name}}s.length > 0 ? (
+      {% if {{ entity_name }}s.length > 0 %}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {{{entity_name}}s.map(({{entity_name}}) => (
-            <{{entity_type}}Card key={{{entity_name}}.id} {{entity_name}}={{{entity_name}}} />
-          ))}
+          {{ entity_name }}s.map(({{ entity_name }}) => (
+            <{{ entity_type }}Card key={{ entity_name }}.id {{ entity_name }}={{ entity_name }} />
+          ))
         </div>
-      ) : (
+      {% else %}
         <div className="bg-gray-50 p-8 rounded-md text-center border border-gray-200">
           <h2 className="text-gray-600 text-lg font-semibold">No {{entity_name}}s found</h2>
           <p className="text-gray-500 mt-2">Create your first {{entity_name}} to get started.</p>
@@ -60,7 +60,7 @@ export default function {{entity_type}}ListPage() {
             </Button>
           </Link>
         </div>
-      )}
+      {% endif %}
     </div>
   );
 }

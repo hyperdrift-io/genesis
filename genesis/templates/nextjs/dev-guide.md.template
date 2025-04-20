@@ -1,6 +1,55 @@
 # Developer Guide
 
-This document provides essential information for developers working on the {{app_title}} project.
+## Getting Started
+
+1. Install dependencies: `pnpm install`
+2. Start the dev server: `pnpm dev`
+
+{% if requires_supabase %}
+## Supabase Setup
+
+This project uses Supabase for backend services. To set up:
+
+1. Create a Supabase project at [supabase.com](https://supabase.com)
+2. Copy your project URL and anon key
+3. Create a `.env.local` file from `.env.example`
+4. Update the Supabase URL and anon key in `.env.local`
+5. Set up your database tables according to the entity models in this project
+
+{% endif %}
+
+## Project Structure
+
+- `src/app/` - Next.js app directory
+- `src/components/` - React components
+- `src/services/` - Data services (API or localStorage)
+- `src/store/` - Zustand stores for state management
+- `src/types/` - TypeScript types
+
+{% if requires_supabase %}
+### Supabase Entities
+- Each entity has a corresponding Supabase service in `src/services/`.
+- Update the Supabase table schema as needed.
+{% else %}
+### Local-First Entities
+- Each entity is stored in browser localStorage by default.
+- You can migrate to Supabase later by updating the service files.
+{% endif %}
+
+## Adding Features
+- Add new entities by updating `genesis.json` and re-running Genesis.
+- Add new pages/components as needed.
+
+## Customization
+- Update Tailwind config in `tailwind.config.js`.
+- Add/modify Zustand stores in `src/store/`.
+- Add/modify services in `src/services/`.
+
+{% if requires_supabase %}
+## Supabase Migrations
+- Use Supabase SQL editor or CLI for migrations.
+- Keep your schema in sync with your types.
+{% endif %}
 
 ## Tech Stack Overview
 
@@ -13,25 +62,8 @@ This document provides essential information for developers working on the {{app
 | shadcn/ui | - | UI components | [Docs](https://ui.shadcn.com/docs) |
 | Lucide Icons | ^0.312.0 | Icon library | [Guide](https://lucide.dev/guide) |
 | Zustand | ^4.5.0 | State management | [Docs](https://docs.pmnd.rs/zustand) |
-{{#if {{requires_supabase}} == "true"}}
-| Supabase | ^2.39.3 | Backend services | [Docs](https://supabase.com/docs) |
-{{/if}}
-
-## Project Structure
-
-```
-{{app_name}}/
-├── src/
-│   ├── app/           # Next.js App Router pages
-│   ├── components/    # Reusable React components
-│   │   └── ui/        # shadcn/ui components
-│   ├── lib/           # Utility functions
-│   ├── services/      # API service layer
-│   ├── store/         # Zustand state management
-│   └── types/         # TypeScript interfaces
-├── public/            # Static assets
-└── components.json    # shadcn/ui configuration
-```
+{% if requires_supabase %}| Supabase | ^2.39.3 | Backend services | [Docs](https://supabase.com/docs) |
+{% endif %}
 
 ## UI Framework
 
@@ -75,7 +107,7 @@ function Component() {
 }
 ```
 
-{{#if {{requires_supabase}} == "true"}}
+{% if requires_supabase %}
 ## Supabase Integration
 
 This project uses Supabase for backend services. The connection is configured in `src/utils/supabase.ts`.
@@ -91,11 +123,11 @@ const { data, error } = await supabase
 ```
 
 See the [Supabase documentation](https://supabase.com/docs) for more details.
-{{else}}
+{% else %}
 ## Local Storage
 
 This project uses browser localStorage for data persistence in development. When you're ready to upgrade to a real backend, look for the `CURSOR_RULE: REPLACE_WITH_SUPABASE` comments.
-{{/if}}
+{% endif %}
 
 ## Development Workflow
 
@@ -118,6 +150,5 @@ This project uses browser localStorage for data persistence in development. When
 - [Tailwind CSS](https://tailwindcss.com/docs) - utility-first CSS
 - [Lucide Icons](https://lucide.dev/icons) - icon gallery
 - [Zustand Documentation](https://docs.pmnd.rs/zustand) - state management
-{{#if {{requires_supabase}} == "true"}}
-- [Supabase Documentation](https://supabase.com/docs) - backend services
-{{/if}}
+{% if requires_supabase %}- [Supabase Documentation](https://supabase.com/docs) - backend services
+{% endif %}

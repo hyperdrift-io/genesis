@@ -83,10 +83,10 @@ export default function {{entity_type}}Detail() {
       <Card>
         <CardHeader>
           <CardTitle className="flex justify-between items-center">
-            <span>{{{entity_name}}.name}</span>
+            <span>{{ entity_name }}.name</span>
             <div className="flex space-x-2">
               <Link
-                href={`/{{entity_name}}s/${{{entity_name}}.id}/edit`}
+                href={`/{{ entity_name }}s/{{ entity_name }}.id/edit`}
                 className="p-2 bg-blue-50 text-blue-600 rounded-md hover:bg-blue-100 transition-colors"
               >
                 <Edit className="w-5 h-5" />
@@ -105,7 +105,7 @@ export default function {{entity_type}}Detail() {
         <CardContent className="space-y-4">
           <div>
             <h3 className="text-sm font-medium text-gray-500">Description</h3>
-            <p className="mt-1">{{{entity_name}}.description || 'No description provided'}</p>
+            <p className="mt-1">{{ entity_name }}.description || 'No description provided'</p>
           </div>
 
           <div>

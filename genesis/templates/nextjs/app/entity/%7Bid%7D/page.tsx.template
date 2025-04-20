@@ -1,0 +1,4 @@
+<h1 className="text-2xl font-bold mb-4">{{ entity_name }}.name</h1>
+{% if {{ entity_name }}.description %}
+<p className="text-gray-700 mb-4">{{ entity_name }}.description</p>
+{% endif %}

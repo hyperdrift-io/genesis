@@ -35,13 +35,47 @@ my-app/
 └── package.json      # Project configuration
 ```
 
-## 🛠️ Usage
+## 🛠️ Installation
+
+### Global Installation
+
+You can install Genesis globally to use it from anywhere:
 
 ```bash
-npx @genesis/create my-app
+pip install -e git+https://github.com/yannvr/genesis.git#egg=genesis
+```
+
+After installation, you'll have access to the `genesis` command globally:
+
+```bash
+genesis my-app --description "A blog application" --functionality "Users can create posts with tags"
+```
+
+### Development Installation
+
+For contributing to Genesis or running from source:
+
+```bash
+git clone https://github.com/yannvr/genesis.git
+cd genesis
+pip install -e .
+```
+
+## 🛠️ Usage
+
+Once installed, you can create new applications:
+
+```bash
+genesis my-app
 ```
 
 The CLI will prompt you for a description of your application. That's it!
+
+You can also provide description and functionality details directly:
+
+```bash
+genesis my-app --description "A task management app" --functionality "Users can create tasks, assign them to others, and track progress"
+```
 
 ## 🤖 AI-Assisted Development
 

@@ -68,7 +68,7 @@ export default function Edit{{entity_type}}Page() {
         </Link>
       </div>
 
-      <{{entity_type}}Form initialData={{{entity_name}}} onSuccess={handleSuccess} />
+      <{{entity_type}}Form initialData={{entity_name}} onSuccess={handleSuccess} />
     </div>
   );
 }
