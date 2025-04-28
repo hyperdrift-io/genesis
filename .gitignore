@@ -216,3 +216,32 @@ tags
 # End of https://www.toptal.com/developers/gitignore/api/python,visualstudiocode,vim
 
 tmp/
+
+# Node.js specific
+node_modules/
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+.pnpm-debug.log
+.npm
+.yarn-integrity
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
+.pnp.*
+
+# Bun
+bun.lockb
+.bun/
+
+# Turbo
+.turbo/
+
+# Next.js
+.next/
+out/
+
+# Vite
+dist/
+dist-ssr/
