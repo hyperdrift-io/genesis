@@ -77,24 +77,12 @@ You can also provide description and functionality details directly:
 genesis my-app --description "A task management app" --functionality "Users can create tasks, assign them to others, and track progress"
 ```
 
+A highly DX friendly boilerplate will be created with initial typings. It doesn't not generate the app. The app is meant to generate most of the APP (UI, stores and behaviour) on the second prompt. The second prompt can be the same one as the first one (ie: `Users can create tasks, assign them to others, and track progress`)
+
 ## 🤖 AI-Assisted Development
 
-Genesis creates applications with built-in rules for AI coding assistants like:
-- GitHub Copilot
+It is best used from AI assisted IDE like:
 - Cursor
-- Anthropic Claude
-- OpenAI's ChatGPT
+- WindSurf
 
 These rules help AI tools understand your codebase and make intelligent suggestions that align with your project's architecture and goals.
-
-## 🔄 Improvements over Tonk
-
-1. **Simplified Architecture**: Removed unnecessary dependencies like keepsync and hub
-2. **Streamlined Configuration**: Focus on what matters for getting started quickly
-3. **Improved AI Rules**: Better guidance for AI assistants during development
-4. **Native Supabase Integration**: Optional backend-as-a-service integration
-5. **Stronger Defaults**: More sensible defaults for modern web development
-
-## 📚 License
-
-MIT © Genesis 
