@@ -49,9 +49,16 @@
 - For new entities not covered by the initial setup, create corresponding types, stores, and API modules following existing patterns.
 - Avoid re-generating the app unless significant structural changes are needed.
 
-# Cursor AI Rules
+---
 
-All queries must be checked against the rules in `../docs/rules/rules.md` before implementation. The rules in that document are the source of truth for technology and feature selection.
+# Genesis AI Rules
 
-- Always consult `docs/rules/rules.md` for guidance.
-- If a feature requires persistence, relational queries, authentication, or real-time data, you MUST use Supabase as per the rules.
+## Rule 1: Query Routing
+All feature or implementation queries must be checked against the rules in this document before proceeding. This ensures consistent and minimal framework growth.
+
+## Rule 2: Supabase Requirement
+If a requested feature requires persistence, relational queries, authentication, real-time data, or any other functionality typically provided by a backend database, you MUST use Supabase to fulfill this requirement. Do not include Supabase unless such a requirement is present.
+
+---
+
+_This document is referenced by the AI to determine how to respond to user queries and which technologies to include._ 

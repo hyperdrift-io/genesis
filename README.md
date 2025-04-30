@@ -10,6 +10,7 @@ Genesis automates the entire process of web application creation by:
 3. Providing intelligent defaults that make sense
 4. Including built-in rules and instructions for AI-assisted development
 
+
 ## 🚀 Key Features
 
 - **Single Prompt App Creation**: Generate full applications from a simple description
