@@ -1,10 +1,6 @@
 {
   "rules": [
     {
-      "pattern": "tailwindcss",
-      "message": "Tailwind CSS v4: https://tailwindcss.com/docs/installation/framework-guides/nextjs"
-    },
-    {
       "pattern": "shadcn/ui",
       "message": "shadcn/ui Components: https://ui.shadcn.com/docs"
     },

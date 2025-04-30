@@ -1,130 +1,93 @@
 # UI Components Guide
 
-This project uses a combination of [shadcn/ui](https://ui.shadcn.com) components and [Lucide](https://lucide.dev) icons to provide a beautiful, accessible user interface.
+This project uses [Ant Design](https://ant.design) as the default UI component library, providing a comprehensive set of accessible, production-ready components for rapid development and a consistent user experience.
 
 ## Core Libraries
 
-| Library | Version | Description | Documentation |
-|---------|---------|-------------|---------------|
-| Tailwind CSS | 4.0.0-alpha.2 | Utility-first CSS framework | [Docs](https://tailwindcss.com/docs/installation/framework-guides/nextjs) |
-| shadcn/ui | - | Re-usable component library | [Docs](https://ui.shadcn.com/docs) |
+| Library      | Version | Description                | Documentation                                      |
+|--------------|---------|----------------------------|----------------------------------------------------|
+| Ant Design   | Latest  | UI component library       | [Docs](https://ant.design/components/overview/)    |
 | Lucide Icons | 0.312.0 | Beautiful & consistent icon toolkit | [Docs](https://lucide.dev/guide/installation) / [Icons](https://lucide.dev/icons) |
-| Radix UI | Latest | Unstyled, accessible components | [Docs](https://www.radix-ui.com/primitives/docs/overview/introduction) |
-| Zustand | 4.5.0 | Small, fast state management | [Docs](https://docs.pmnd.rs/zustand/getting-started/introduction) |
+| Zustand      | 4.5.0   | Small, fast state management | [Docs](https://docs.pmnd.rs/zustand/getting-started/introduction) |
 
-## Available Components
+## Using Ant Design Components
 
-This project includes the following shadcn/ui components that you can use in your application:
+Ant Design provides a wide range of components. Here are some common examples:
 
-### Form Components
+### Button
+```tsx
+import { Button } from 'antd';
 
-- **Button** - [Documentation](https://ui.shadcn.com/docs/components/button)
-  ```tsx
-  import { Button } from "@/components/ui/button"
+<Button type="primary">Primary Button</Button>
+<Button>Default Button</Button>
+<Button type="dashed">Dashed Button</Button>
+<Button type="text">Text Button</Button>
+<Button type="link">Link Button</Button>
+```
 
-  // Example with Lucide icon
-  import { Send } from "lucide-react"
+### Input
+```tsx
+import { Input } from 'antd';
 
-  <Button>
-    <Send className="mr-2 h-4 w-4" />
-    Send Message
-  </Button>
-  ```
+<Input placeholder="Basic usage" />
+```
 
-- **Input** - [Documentation](https://ui.shadcn.com/docs/components/input)
-  ```tsx
-  import { Input } from "@/components/ui/input"
+### Form
+```tsx
+import { Form, Input, Button } from 'antd';
 
-  <Input type="email" placeholder="Email" />
-  ```
+<Form>
+  <Form.Item label="Username" name="username">
+    <Input />
+  </Form.Item>
+  <Form.Item>
+    <Button type="primary" htmlType="submit">Submit</Button>
+  </Form.Item>
+</Form>
+```
 
-- **Textarea** - [Documentation](https://ui.shadcn.com/docs/components/textarea)
-  ```tsx
-  import { Textarea } from "@/components/ui/textarea"
+### Card
+```tsx
+import { Card } from 'antd';
 
-  <Textarea placeholder="Type your message here." />
-  ```
-
-- **Label** - [Documentation](https://ui.shadcn.com/docs/components/label)
-  ```tsx
-  import { Label } from "@/components/ui/label"
-
-  <Label htmlFor="email">Email</Label>
-  ```
-
-### Layout Components
-
-- **Card** - [Documentation](https://ui.shadcn.com/docs/components/card)
-  ```tsx
-  import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle,
-  } from "@/components/ui/card"
-
-  <Card>
-    <CardHeader>
-      <CardTitle>Card Title</CardTitle>
-      <CardDescription>Card Description</CardDescription>
-    </CardHeader>
-    <CardContent>
-      <p>Card Content</p>
-    </CardContent>
-    <CardFooter>
-      <p>Card Footer</p>
-    </CardFooter>
-  </Card>
-  ```
-
-## Adding More Components
-
-To add more shadcn/ui components to your project:
-
-1. Install the component CLI:
-   ```bash
-   npx shadcn-ui@latest add [component-name]
-   ```
-
-2. For example, to add a Dialog component:
-   ```bash
-   npx shadcn-ui@latest add dialog
-   ```
+<Card title="Card Title" bordered={false} style={{ width: 300 }}>
+  Card content
+</Card>
+```
 
 ## Using Lucide Icons
 
 This project includes Lucide for beautiful, consistent icons. To use them:
 
 ```tsx
-import { Heart, Share, Trash } from "lucide-react"
+import { Heart, Share, Trash } from "lucide-react";
 
-<Heart className="h-6 w-6 text-red-500" />
-<Share className="h-6 w-6" />
-<Trash className="h-6 w-6" />
+<Heart className="icon" />
+<Share className="icon" />
+<Trash className="icon" />
 ```
 
 Browse all available icons at [lucide.dev/icons](https://lucide.dev/icons).
 
-## Utilities
+## State Management with Zustand
 
-### Class Merging with `cn`
-
-Use the `cn` utility to conditionally merge Tailwind CSS classes:
+Zustand is used for state management. Example usage:
 
 ```tsx
-import { cn } from "@/lib/utils"
+import { useUserStore } from '@/store/userStore';
 
-<div className={cn(
-  "base-styles",
-  condition && "conditional-styles",
-  className
-)} />
+function Component() {
+  const { users, fetchUsers } = useUserStore();
+  // ...
+}
 ```
+
+## Styling Guidelines
+
+- Use **plain CSS files** for global/shared styles (e.g., layout, typography, colors).
+- Use **CSS Modules** for component-specific (non-shared) styles to ensure encapsulation and avoid style leakage.
+- Avoid inline styles except for dynamic or one-off cases.
 
 ## Theming
 
-This project uses CSS variables for theming. They are defined in `app/globals.css` and can be customized to match your brand.
-
-The default theme includes both light and dark mode support via the `.dark` class.
+Ant Design supports theming via [ConfigProvider](https://ant.design/components/config-provider/) and CSS variables. Refer to the Ant Design documentation for details on customizing the theme to match your brand.

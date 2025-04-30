@@ -122,7 +122,6 @@ class AppGenerator:
             ("app/page.tsx.template", "src/app/page.tsx"),
             ("app/globals.css.template", "src/app/globals.css"),
             ("components/Navbar.tsx.template", "src/components/Navbar.tsx"),
-            ("tailwind.config.js.template", "tailwind.config.js"),
             ("postcss.config.js.template", "postcss.config.js"),
             ("README.md.template", "README.md"),
             ("lib/utils.ts.template", "src/lib/utils.ts"),
@@ -132,7 +131,7 @@ class AppGenerator:
             ("components/ui/label.tsx.template", "src/components/ui/label.tsx"),
             ("components/ui/textarea.tsx.template", "src/components/ui/textarea.tsx"),
             (".cursorrules.json.template", ".cursorrules.json"),
-            ("COMPONENTS.md.template", "COMPONENTS.md"),
+            ("COMPONENTS.md.template", "docs/rules/COMPONENTS.md"),
             ("dev-guide.md.template", "DEV-GUIDE.md"),
         ]
         for template_rel_path, output_rel_path in root_templates:
@@ -161,18 +160,12 @@ class AppGenerator:
                     "lucide-react": "^0.312.0",
                     "class-variance-authority": "^0.7.0",
                     "clsx": "^2.1.0",
-                    "tailwind-merge": "^2.2.0",
-                    "@radix-ui/react-slot": "^1.0.2",
-                    "@radix-ui/react-label": "^2.0.2",
                 },
                 "devDependencies": {
                     "typescript": "^5.3.3",
                     "@types/react": "^18.2.48",
                     "@types/node": "^20.11.0",
                     "@types/react-dom": "^18.2.18",
-                    "tailwindcss": "^3.4.1",
-                    "tailwindcss-animate": "^1.0.7",
-                    "autoprefixer": "^10.4.16",
                 },
                 "engines": {"node": ">=18.0.0", "pnpm": ">=8.0.0"},
                 "packageManager": "pnpm@8.15.0",
@@ -197,9 +190,6 @@ class AppGenerator:
                     "lucide-react": "^0.312.0",
                     "class-variance-authority": "^0.7.0",
                     "clsx": "^2.1.0",
-                    "tailwind-merge": "^2.2.0",
-                    "@radix-ui/react-slot": "^1.0.2",
-                    "@radix-ui/react-label": "^2.0.2",
                 }
             )
             if self.spec.get("requires_supabase", False):
@@ -209,8 +199,6 @@ class AppGenerator:
             package_json["devDependencies"].update(
                 {
                     "tailwindcss": "^3.4.1",
-                    "tailwindcss-animate": "^1.0.7",
-                    "autoprefixer": "^10.4.16",
                 }
             )
             package_json["engines"] = {"node": ">=18.0.0", "pnpm": ">=8.0.0"}

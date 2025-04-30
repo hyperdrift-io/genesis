@@ -1,14 +1,14 @@
 # Genesis App Development Guidelines
 
 ## General Rules
-- Always use PascalCase for React component filenames (e.g., UserProfile.tsx).
-- Avoid inline styles; prefer Tailwind CSS utility classes.
+- Use Ant Design (ant.design) components for all UI elements unless a specific requirement cannot be met by Ant Design.
+- Use plain CSS files for shared/global styles (e.g., layout, typography, colors).
+- Use CSS Modules for component-specific (non-shared) styles to ensure encapsulation and avoid style leakage.
 - Remove unused imports and variables.
 - Focus on business logic in views and stores; technical concerns (API calls, routing) are already handled.
 
 ## State Management
-- Use the provided Zustand stores for state management; extend existing stores for new features related to pre-generated entities.
-- Implement local-first operations (e.g., optimistic updates) as shown in existing store examples.
+- Use the default state management approach provided by React (useState, useReducer, context) unless otherwise specified.
 - Keep business logic in stores or API modules to maintain separation of concerns.
 
 ## API and Modules Pattern
@@ -17,7 +17,8 @@
 - Place non-API business logic in dedicated modules under 'src/modules/core/'.
 
 ## Component Structure
-- Keep UI components purely presentational, consuming data from stores.
+- Build UI components using Ant Design primitives and patterns.
+- Use CSS Modules for component-specific styles and plain CSS for shared styles.
 - Clearly define prop types using TypeScript interfaces.
 - Keep components small and focused on a single responsibility.
 
@@ -30,10 +31,10 @@
 - Use TypeScript generics for reusable components and functions.
 - Avoid 'any' type; prefer explicit types or unknown with type guards.
 
-## Styling with Tailwind CSS
-- Use Tailwind CSS utility classes for styling; avoid custom CSS files unless extending the theme.
-- Follow responsive design principles with Tailwind's breakpoint prefixes (sm:, md:, lg:, etc.).
-- Use Tailwind's dark mode utilities for dark theme support if needed.
+## Styling with CSS
+- Use plain CSS files for global/shared styles.
+- Use CSS Modules for component-specific styles.
+- Avoid inline styles except for dynamic or one-off cases.
 
 ## Testing
 - Write tests for new components and stores following existing patterns.
