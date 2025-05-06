@@ -11,27 +11,27 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
-import { use{{entity_type}}Store } from "@/store/{{entity_name}}Store";
+import { use{{$ entity_type $}}Store } from "@/store/{{$ entity_name $}}Store";
 
 type PublishStatus = 'draft' | 'published' | 'scheduled';
 
-type {{entity_type}}PublishProps = {
-  {{entity_name}}Id: string;
+type {{$ entity_type $}}PublishProps = {
+  {{$ entity_name $}}Id: string;
   currentStatus: PublishStatus;
   scheduledTime?: string;
   className?: string;
   onStatusChange?: (status: PublishStatus, scheduledTime?: string) => void;
 };
 
-export default function {{entity_type}}Publish({
-  {{entity_name}}Id,
+export default function {{$ entity_type $}}Publish({
+  {{$ entity_name $}}Id,
   currentStatus = 'draft',
   scheduledTime,
   className,
   onStatusChange
-}: {{entity_type}}PublishProps) {
+}: {{$ entity_type $}}PublishProps) {
   const router = useRouter();
-  const { update{{entity_type}} } = use{{entity_type}}Store();
+  const { update{{$ entity_type $}} } = use{{$ entity_type $}}Store();
   const [status, setStatus] = useState<PublishStatus>(currentStatus);
   const [publishDate, setPublishDate] = useState<string>(scheduledTime || '');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -56,8 +56,8 @@ export default function {{entity_type}}Publish({
   const handleSave = async () => {
     setIsSubmitting(true);
     try {
-      // Update the {{entity_name}} status
-      await update{{entity_type}}({{entity_name}}Id, {
+      // Update the {{$ entity_name $}} status
+      await update{{$ entity_type $}}({{$ entity_name $}}Id, {
         status,
         ...(status === 'scheduled' ? { scheduledPublishTime: publishDate } : {})
       });

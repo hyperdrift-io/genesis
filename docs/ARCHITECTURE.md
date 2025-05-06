@@ -81,7 +81,7 @@ AI development rules that guide AI assistants in understanding and extending the
 
 ### 3. Styling
 
-**Tailwind CSS**: Utility-first approach that allows for rapid UI development.
+**Tailwind CSS**: Utility-first approach that allows for rapid UI development with shadcn/ui components.
 
 ### 4. Backend (Optional)
 

@@ -1,22 +1,22 @@
-{{entity_imports}}
+{{$ entity_imports $}}
 
-export interface {{entity_type}} {
+export interface {{$ entity_type $}} {
   id: string;
   name: string;
   description?: string;
   createdAt: string;
   updatedAt: string;
   // Add additional properties based on entity analysis
-  {{entity_fields}}
-  {% if has_publishing %}
+  {{$ entity_fields $}}
+  {%$ if has_publishing $%}
     status: 'draft' | 'published' | 'scheduled';
     scheduledPublishTime?: string;
     publishedAt?: string;
-  {% endif %}
-  {% if has_tags %}
+  {%$ endif $%}
+  {%$ if has_tags $%}
     tags?: string[];
-  {% endif %}
-  {% if has_ratings %}
+  {%$ endif $%}
+  {%$ if has_ratings $%}
     rating?: number;
     ratingCount?: number;
     reviews?: {
@@ -27,16 +27,16 @@ export interface {{entity_type}} {
       comment?: string;
       createdAt: string;
     }[];
-  {% endif %}
-  {% if has_geolocation %}
+  {%$ endif $%}
+  {%$ if has_geolocation $%}
     location?: {
       latitude: number;
       longitude: number;
       address?: string;
     };
-  {% endif %}
-  {{entity_relationships}}
+  {%$ endif $%}
+  {{$ entity_relationships $}}
 }
 
-export type New{{entity_type}} = Omit<{{entity_type}}, 'id' | 'createdAt' | 'updatedAt'>;
-export type Update{{entity_type}} = Partial<{{entity_type}}>;
+export type New{{$ entity_type $}} = Omit<{{$ entity_type $}}, 'id' | 'createdAt' | 'updatedAt'>;
+export type Update{{$ entity_type $}} = Partial<{{$ entity_type $}}>;

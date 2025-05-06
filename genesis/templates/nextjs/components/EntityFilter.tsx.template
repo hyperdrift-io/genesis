@@ -9,17 +9,17 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-{{entity_imports}}
+{{$ entity_imports $}}
 
-type {{entity_type}}FilterProps = {
+type {{$ entity_type $}}FilterProps = {
   onFilterChange: (filters: any) => void;
   className?: string;
 };
 
-export default function {{entity_type}}Filter({
+export default function {{$ entity_type $}}Filter({
   onFilterChange,
   className
-}: {{entity_type}}FilterProps) {
+}: {{$ entity_type $}}FilterProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [sortField, setSortField] = useState('createdAt');
   const [sortDirection, setSortDirection] = useState('desc');
@@ -53,7 +53,7 @@ export default function {{entity_type}}Filter({
         <div className="relative flex-1">
           <Search className="absolute left-2 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
           <Input
-            placeholder="Search {{plural_name}}..."
+            placeholder="Search {{$ plural_name $}}..."
             value={searchTerm}
             onChange={handleSearch}
             className="pl-8"

@@ -1,6 +1,6 @@
-# {{app_title}}
+# {{$ app_title $}}
 
-{{description}}
+{{$ description $}}
 
 ## Getting Started
 
@@ -16,7 +16,7 @@ pnpm dev
 
 ## Features
 
-{{features_list}}
+{{$ features_list $}}
 
 ## Development Guidelines
 

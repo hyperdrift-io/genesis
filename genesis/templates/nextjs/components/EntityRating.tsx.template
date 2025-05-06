@@ -3,10 +3,10 @@ import { Star } from 'lucide-react';
 import { Button } from "./ui/button";
 import { Textarea } from "./ui/textarea";
 import { cn } from "@/lib/utils";
-import { use{{entity_type}}Store } from "@/store/{{entity_name}}Store";
+import { use{{$ entity_type $}}Store } from "@/store/{{$ entity_name $}}Store";
 
-interface {{entity_type}}RatingProps {
-  {{entity_name}}Id: string;
+interface {{$ entity_type $}}RatingProps {
+  {{$ entity_name $}}Id: string;
   existingRating?: number;
   existingReview?: string;
   onRatingSubmitted?: () => void;
@@ -14,15 +14,15 @@ interface {{entity_type}}RatingProps {
   readOnly?: boolean;
 }
 
-export default function {{entity_type}}Rating({
-  {{entity_name}}Id,
+export default function {{$ entity_type $}}Rating({
+  {{$ entity_name $}}Id,
   existingRating = 0,
   existingReview = '',
   onRatingSubmitted,
   className,
   readOnly = false
-}: {{entity_type}}RatingProps) {
-  const { update{{entity_type}} } = use{{entity_type}}Store();
+}: {{$ entity_type $}}RatingProps) {
+  const { update{{$ entity_type $}} } = use{{$ entity_type $}}Store();
   const [rating, setRating] = useState(existingRating);
   const [hoveredRating, setHoveredRating] = useState(0);
   const [review, setReview] = useState(existingReview);
@@ -48,7 +48,7 @@ export default function {{entity_type}}Rating({
       const userName = 'Current User';
 
       // Update the entity with the new rating
-      await update{{entity_type}}({{entity_name}}Id, {
+      await update{{$ entity_type $}}({{$ entity_name $}}Id, {
         reviews: [{
           id: Date.now().toString(),
           userId,
@@ -73,7 +73,7 @@ export default function {{entity_type}}Rating({
     <div className={cn("space-y-4", className)}>
       <div className="flex flex-col space-y-2">
         <span className="text-sm font-medium">
-          {readOnly ? 'Rating' : 'Rate this {{entity_name}}'}
+          {readOnly ? 'Rating' : 'Rate this {{$ entity_name $}}'}
         </span>
         <div className="flex items-center">
           {[1, 2, 3, 4, 5].map((value) => (
@@ -105,7 +105,7 @@ export default function {{entity_type}}Rating({
             </label>
             <Textarea
               id="review"
-              placeholder="Write your thoughts about this {{entity_name}}..."
+              placeholder="Write your thoughts about this {{$ entity_name $}}..."
               rows={4}
               value={review}
               onChange={(e) => setReview(e.target.value)}

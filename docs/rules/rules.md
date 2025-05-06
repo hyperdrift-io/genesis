@@ -1,9 +1,9 @@
 # Genesis App Development Guidelines
 
 ## General Rules
-- Use Ant Design (ant.design) components for all UI elements unless a specific requirement cannot be met by Ant Design.
-- Use plain CSS files for shared/global styles (e.g., layout, typography, colors).
-- Use CSS Modules for component-specific (non-shared) styles to ensure encapsulation and avoid style leakage.
+- Use Tailwind CSS for styling with shadcn/ui components for UI elements.
+- Use component composition and Tailwind utility classes for responsive layouts.
+- Use CSS Modules only when Tailwind utilities are insufficient for complex styling needs.
 - Remove unused imports and variables.
 - Focus on business logic in views and stores; technical concerns (API calls, routing) are already handled.
 
@@ -17,8 +17,8 @@
 - Place non-API business logic in dedicated modules under 'src/modules/core/'.
 
 ## Component Structure
-- Build UI components using Ant Design primitives and patterns.
-- Use CSS Modules for component-specific styles and plain CSS for shared styles.
+- Build UI components using shadcn/ui primitives and Tailwind CSS utility classes.
+- Use CSS Modules only for complex styling needs that can't be addressed with Tailwind.
 - Clearly define prop types using TypeScript interfaces.
 - Keep components small and focused on a single responsibility.
 
@@ -31,10 +31,11 @@
 - Use TypeScript generics for reusable components and functions.
 - Avoid 'any' type; prefer explicit types or unknown with type guards.
 
-## Styling with CSS
-- Use plain CSS files for global/shared styles.
-- Use CSS Modules for component-specific styles.
-- Avoid inline styles except for dynamic or one-off cases.
+## Styling with Tailwind CSS
+- Use Tailwind utility classes directly in JSX for component styling.
+- Follow the utility-first approach - compose small utility classes rather than creating custom CSS.
+- Use the cn() utility function to conditionally apply classes.
+- Maintain consistent spacing, colors and typography using Tailwind's design system.
 
 ## Testing
 - Write tests for new components and stores following existing patterns.

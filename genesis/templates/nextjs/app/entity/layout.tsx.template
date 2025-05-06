@@ -1,4 +1,4 @@
-export default function {{entity_type}}Layout({
+export default function {{$ entity_type $}}Layout({
   children,
 }: {
   children: React.ReactNode;
@@ -11,6 +11,6 @@ export default function {{entity_type}}Layout({
 }
 
 export const metadata = {
-  title: '{{entity_type}}s',
-  description: 'Manage your {{entity_type}}s',
+  title: '{{$ entity_type $}}s',
+  description: 'Manage your {{$ entity_type $}}s',
 };

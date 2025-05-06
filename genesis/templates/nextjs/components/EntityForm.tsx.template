@@ -1,8 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { use{{entity_type}}Store } from '@/store/{{entity_name}}Store';
-import { {{entity_type}} } from '@/types/{{entity_name}}';
+import { use{{$ entity_type $}}Store } from '@/store/{{$ entity_name $}}Store';
+import { {{$ entity_type $}} } from '@/types/{{$ entity_name $}}';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -10,21 +10,21 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Save, Loader2 } from 'lucide-react';
 
-interface {{entity_type}}FormProps {
-  initialData?: {{entity_type}};
+interface {{$ entity_type $}}FormProps {
+  initialData?: {{$ entity_type $}};
   onSuccess?: () => void;
 }
 
-export default function {{entity_type}}Form({ initialData, onSuccess }: {{entity_type}}FormProps) {
+export default function {{$ entity_type $}}Form({ initialData, onSuccess }: {{$ entity_type $}}FormProps) {
   const isEditing = !!initialData;
 
-  const [formData, setFormData] = useState<Partial<{{entity_type}}>>({
+  const [formData, setFormData] = useState<Partial<{{$ entity_type $}}>>({
     name: initialData?.name || '',
     description: initialData?.description || '',
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const { create{{entity_type}}, update{{entity_type}}, isLoading, error } = use{{entity_type}}Store();
+  const { create{{$ entity_type $}}, update{{$ entity_type $}}, isLoading, error } = use{{$ entity_type $}}Store();
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -64,9 +64,9 @@ export default function {{entity_type}}Form({ initialData, onSuccess }: {{entity
 
     try {
       if (isEditing && initialData) {
-        await update{{entity_type}}(initialData.id, formData);
+        await update{{$ entity_type $}}(initialData.id, formData);
       } else {
-        await create{{entity_type}}(formData);
+        await create{{$ entity_type $}}(formData);
       }
 
       if (onSuccess) {
@@ -80,11 +80,11 @@ export default function {{entity_type}}Form({ initialData, onSuccess }: {{entity
   return (
     <Card className="w-full">
       <CardHeader>
-        <CardTitle>{isEditing ? 'Edit' : 'New'} {{entity_type}}</CardTitle>
+        <CardTitle>{isEditing ? 'Edit' : 'New'} {{$ entity_type $}}</CardTitle>
         <CardDescription>
           {isEditing
-            ? 'Update the information for this {{entity_name}}.'
-            : 'Enter information to create a new {{entity_name}}.'
+            ? 'Update the information for this {{$ entity_name $}}.'
+            : 'Enter information to create a new {{$ entity_name $}}.'
           }
         </CardDescription>
       </CardHeader>

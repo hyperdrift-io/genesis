@@ -1,0 +1,35 @@
+{
+  "name": "task-manager",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "next": "^15.0.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "zustand": "^4.5.0",
+    "lucide-react": "^0.312.0",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.1.0",
+    "@supabase/supabase-js": "^2.39.3"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3",
+    "@types/react": "^18.2.48",
+    "@types/node": "^20.11.0",
+    "@types/react-dom": "^18.2.18",
+    "tailwindcss": "^3.4.1",
+    "autoprefixer": "^10.4.14",
+    "postcss": "^8.4.24",
+    "tailwindcss-animate": "^1.0.7"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "packageManager": "pnpm@8.15.0"
+}

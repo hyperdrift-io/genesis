@@ -1,0 +1,128 @@
+# Developer Guide
+
+## Getting Started
+
+1. Install dependencies: `pnpm install`
+2. Start the dev server: `pnpm dev`
+
+
+## Supabase Setup
+
+This project uses Supabase for backend services. To set up:
+
+1. Create a Supabase project at [supabase.com](https://supabase.com)
+2. Copy your project URL and anon key
+3. Create a `.env.local` file from `.env.example`
+4. Update the Supabase URL and anon key in `.env.local`
+5. Set up your database tables according to the entity models in this project
+
+
+
+## Project Structure
+
+- `src/app/` - Next.js app directory
+- `src/components/` - React components
+- `src/services/` - Data services (API or localStorage)
+- `src/store/` - Zustand stores for state management
+- `src/types/` - TypeScript types
+
+
+### Supabase Entities
+- Each entity has a corresponding Supabase service in `src/services/`.
+- Update the Supabase table schema as needed.
+
+
+## Adding Features
+- Add new entities by updating `genesis.json` and re-running Genesis.
+- Add new pages/components as needed.
+
+## Customization
+- Add/modify Zustand stores in `src/store/`.
+- Add/modify services in `src/services/`.
+
+
+## Supabase Migrations
+- Use Supabase SQL editor or CLI for migrations.
+- Keep your schema in sync with your types.
+
+
+## Tech Stack Overview
+
+| Technology | Version | Purpose | Documentation |
+|------------|---------|---------|---------------|
+| Next.js | ^15.0.0 | React framework | [Docs](https://nextjs.org/docs) |
+| React | ^18.3.1 | UI library | [Docs](https://react.dev) |
+| TypeScript | ^5.3.3 | Type safety | [Docs](https://www.typescriptlang.org/docs/) |
+| Tailwind CSS | ^3.4.1 | Utility-first CSS | [Docs](https://tailwindcss.com/docs) |
+| shadcn/ui | Latest | UI components | [Docs](https://ui.shadcn.com/docs) |
+| Lucide Icons | ^0.312.0 | Icon library | [Guide](https://lucide.dev/guide) |
+| Zustand | ^4.5.0 | State management | [Docs](https://docs.pmnd.rs/zustand) |
+| Supabase | ^2.39.3 | Backend services | [Docs](https://supabase.com/docs) |
+
+
+## UI Framework
+
+We use [Tailwind CSS](https://tailwindcss.com) for styling with [shadcn/ui](https://ui.shadcn.com) components. This combination provides a comprehensive set of accessible, production-ready components for rapid development and a consistent user experience.
+
+For detailed component usage, see [docs/rules/COMPONENTS.md](./docs/rules/COMPONENTS.md).
+
+### Key UI Patterns
+
+- Use Tailwind CSS utility classes for styling.
+- Use shadcn/ui components for UI elements.
+- Use the cn() utility for conditional class application.
+- Use Lucide Icons for iconography.
+
+## State Management
+
+We use Zustand for state management. Each entity has its own store in the `src/store` directory.
+
+```tsx
+// Using a store
+import { useUserStore } from "@/store/userStore";
+
+function Component() {
+  const { users, fetchUsers } = useUserStore();
+  // ...
+}
+```
+
+
+## Supabase Integration
+
+This project uses Supabase for backend services. The connection is configured in `src/utils/supabase.ts`.
+
+```tsx
+// Using Supabase client
+import { supabase } from "@/utils/supabase";
+
+// Example query
+const { data, error } = await supabase
+  .from('table_name')
+  .select('*');
+```
+
+See the [Supabase documentation](https://supabase.com/docs) for more details.
+
+
+## Development Workflow
+
+1. **Run the development server**:
+   ```bash
+   pnpm dev
+   ```
+
+2. **Use Cursor rules** to get inline documentation and guidance (look for patterns in the `.cursorrules.json` file).
+
+## Resources
+
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features
+- [Tailwind CSS Documentation](https://tailwindcss.com/docs) - utility-first CSS
+- [shadcn/ui Documentation](https://ui.shadcn.com/docs) - UI components
+- [Lucide Icons](https://lucide.dev/icons) - icon gallery
+- [Zustand Documentation](https://docs.pmnd.rs/zustand) - state management
+- [Supabase Documentation](https://supabase.com/docs) - backend services
+
+
+- Use Tailwind CSS utility classes for styling components.
+- Use shadcn/ui components for UI elements.

@@ -5,7 +5,7 @@
 1. Install dependencies: `pnpm install`
 2. Start the dev server: `pnpm dev`
 
-{% if requires_supabase %}
+{%$ if requires_supabase $%}
 ## Supabase Setup
 
 This project uses Supabase for backend services. To set up:
@@ -16,7 +16,7 @@ This project uses Supabase for backend services. To set up:
 4. Update the Supabase URL and anon key in `.env.local`
 5. Set up your database tables according to the entity models in this project
 
-{% endif %}
+{%$ endif $%}
 
 ## Project Structure
 
@@ -26,15 +26,15 @@ This project uses Supabase for backend services. To set up:
 - `src/store/` - Zustand stores for state management
 - `src/types/` - TypeScript types
 
-{% if requires_supabase %}
+{%$ if requires_supabase $%}
 ### Supabase Entities
 - Each entity has a corresponding Supabase service in `src/services/`.
 - Update the Supabase table schema as needed.
-{% else %}
+{%$ else $%}
 ### Local-First Entities
 - Each entity is stored in browser localStorage by default.
 - You can migrate to Supabase later by updating the service files.
-{% endif %}
+{%$ endif $%}
 
 ## Adding Features
 - Add new entities by updating `genesis.json` and re-running Genesis.
@@ -44,11 +44,11 @@ This project uses Supabase for backend services. To set up:
 - Add/modify Zustand stores in `src/store/`.
 - Add/modify services in `src/services/`.
 
-{% if requires_supabase %}
+{%$ if requires_supabase $%}
 ## Supabase Migrations
 - Use Supabase SQL editor or CLI for migrations.
 - Keep your schema in sync with your types.
-{% endif %}
+{%$ endif $%}
 
 ## Tech Stack Overview
 
@@ -57,22 +57,24 @@ This project uses Supabase for backend services. To set up:
 | Next.js | ^15.0.0 | React framework | [Docs](https://nextjs.org/docs) |
 | React | ^18.3.1 | UI library | [Docs](https://react.dev) |
 | TypeScript | ^5.3.3 | Type safety | [Docs](https://www.typescriptlang.org/docs/) |
-| Ant Design | Latest | UI components | [Docs](https://ant.design/components/overview/) |
+| Tailwind CSS | ^3.4.1 | Utility-first CSS | [Docs](https://tailwindcss.com/docs) |
+| shadcn/ui | Latest | UI components | [Docs](https://ui.shadcn.com/docs) |
 | Lucide Icons | ^0.312.0 | Icon library | [Guide](https://lucide.dev/guide) |
 | Zustand | ^4.5.0 | State management | [Docs](https://docs.pmnd.rs/zustand) |
-{% if requires_supabase %}| Supabase | ^2.39.3 | Backend services | [Docs](https://supabase.com/docs) |
-{% endif %}
+{%$ if requires_supabase $%}| Supabase | ^2.39.3 | Backend services | [Docs](https://supabase.com/docs) |
+{%$ endif $%}
 
 ## UI Framework
 
-We use [Ant Design](https://ant.design) for all UI components. Ant Design provides a comprehensive set of accessible, production-ready components for rapid development and a consistent user experience.
+We use [Tailwind CSS](https://tailwindcss.com) for styling with [shadcn/ui](https://ui.shadcn.com) components. This combination provides a comprehensive set of accessible, production-ready components for rapid development and a consistent user experience.
 
 For detailed component usage, see [docs/rules/COMPONENTS.md](./docs/rules/COMPONENTS.md).
 
 ### Key UI Patterns
 
-- Use Ant Design components for all UI elements.
-- Use CSS Modules for component-specific styles and plain CSS for shared styles.
+- Use Tailwind CSS utility classes for styling.
+- Use shadcn/ui components for UI elements.
+- Use the cn() utility for conditional class application.
 - Use Lucide Icons for iconography.
 
 ## State Management
@@ -89,7 +91,7 @@ function Component() {
 }
 ```
 
-{% if requires_supabase %}
+{%$ if requires_supabase $%}
 ## Supabase Integration
 
 This project uses Supabase for backend services. The connection is configured in `src/utils/supabase.ts`.
@@ -105,11 +107,11 @@ const { data, error } = await supabase
 ```
 
 See the [Supabase documentation](https://supabase.com/docs) for more details.
-{% else %}
+{%$ else $%}
 ## Local Storage
 
 This project uses browser localStorage for data persistence in development. When you're ready to upgrade to a real backend, look for the `CURSOR_RULE: REPLACE_WITH_SUPABASE` comments.
-{% endif %}
+{%$ endif $%}
 
 ## Development Workflow
 
@@ -123,11 +125,12 @@ This project uses browser localStorage for data persistence in development. When
 ## Resources
 
 - [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features
-- [Ant Design Documentation](https://ant.design/components/overview/) - UI components
+- [Tailwind CSS Documentation](https://tailwindcss.com/docs) - utility-first CSS
+- [shadcn/ui Documentation](https://ui.shadcn.com/docs) - UI components
 - [Lucide Icons](https://lucide.dev/icons) - icon gallery
 - [Zustand Documentation](https://docs.pmnd.rs/zustand) - state management
-{% if requires_supabase %}- [Supabase Documentation](https://supabase.com/docs) - backend services
-{% endif %}
+{%$ if requires_supabase $%}- [Supabase Documentation](https://supabase.com/docs) - backend services
+{%$ endif $%}
 
-- Use Ant Design components for all UI elements.
-- Use CSS Modules for component-specific styles and plain CSS for shared styles.
+- Use Tailwind CSS utility classes for styling components.
+- Use shadcn/ui components for UI elements.

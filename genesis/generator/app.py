@@ -1,6 +1,7 @@
 import json
 import shutil
 from pathlib import Path
+import os
 
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
@@ -15,14 +16,60 @@ class AppGenerator:
         self.env = Environment(
             loader=FileSystemLoader(str(self.template_dir)),
             autoescape=select_autoescape(["html", "tsx", "js", "ts"]),
+            variable_start_string='{{$',  # Use custom delimiters to avoid conflicts with JSX
+            variable_end_string='$}}',
+            block_start_string='{%$',
+            block_end_string='$%}',
+            comment_start_string='{#$',
+            comment_end_string='$#}',
         )
 
     def render_template(self, template_path, output_path, context):
+        # Use os.path.normpath to ensure consistent path format across platforms
         template_rel = str(template_path.relative_to(self.template_dir))
-        template = self.env.get_template(template_rel)
-        output_path.parent.mkdir(parents=True, exist_ok=True)
-        with open(output_path, "w") as f:
-            f.write(template.render(**context))
+        template_rel = os.path.normpath(template_rel).replace(os.sep, '/')
+
+        print(f"Rendering template: {template_rel} to {output_path}")
+
+        # Try to load the template directly
+        try:
+            template = self.env.get_template(template_rel)
+        except Exception as e:
+            print(f"Error loading template '{template_rel}': {str(e)}")
+
+            # Check if template path contains special characters that might need handling
+            if '[' in template_rel or '{' in template_rel or '%' in template_rel:
+                # Try alternative path formats
+                alt_paths = [
+                    template_rel.replace('[id]', '{id}'),
+                    template_rel.replace('{id}', '[id]'),
+                    template_rel.replace('%7Bid%7D', '[id]'),
+                    template_rel.replace('[id]', '%7Bid%7D')
+                ]
+
+                for alt_path in alt_paths:
+                    try:
+                        print(f"Trying alternative template path: {alt_path}")
+                        template = self.env.get_template(alt_path)
+                        print(f"Successfully loaded alternative template: {alt_path}")
+                        break
+                    except Exception:
+                        continue
+                else:
+                    raise Exception(f"Could not load template '{template_rel}' or any alternatives")
+            else:
+                raise
+
+        # Try to render the template with the context
+        try:
+            output_path.parent.mkdir(parents=True, exist_ok=True)
+            with open(output_path, "w") as f:
+                f.write(template.render(**context))
+            print(f"Successfully rendered {template_rel}")
+        except Exception as e:
+            print(f"Error rendering template '{template_rel}': {str(e)}")
+            print(f"Template context keys: {list(context.keys())}")
+            raise
 
     def generate(self):
         self.output_dir.mkdir(parents=True, exist_ok=True)
@@ -123,6 +170,7 @@ class AppGenerator:
             ("app/globals.css.template", "src/app/globals.css"),
             ("components/Navbar.tsx.template", "src/components/Navbar.tsx"),
             ("postcss.config.js.template", "postcss.config.js"),
+            ("tailwind.config.js.template", "tailwind.config.js"),
             ("README.md.template", "README.md"),
             ("lib/utils.ts.template", "src/lib/utils.ts"),
             ("components/ui/button.tsx.template", "src/components/ui/button.tsx"),
@@ -135,8 +183,19 @@ class AppGenerator:
             ("dev-guide.md.template", "DEV-GUIDE.md"),
         ]
         for template_rel_path, output_rel_path in root_templates:
+            # Normalize path separators
+            template_rel_path = template_rel_path.replace('\\', '/')
+
+            # Create full template path
+            full_template_path = template_path / template_rel_path
+
+            # Check if template exists before attempting to render
+            if not full_template_path.exists():
+                print(f"Warning: Template {full_template_path} not found, skipping.")
+                continue
+
             self.render_template(
-                template_path / template_rel_path,
+                full_template_path,
                 self.output_dir / output_rel_path,
                 template_vars,
             )
@@ -166,8 +225,12 @@ class AppGenerator:
                     "@types/react": "^18.2.48",
                     "@types/node": "^20.11.0",
                     "@types/react-dom": "^18.2.18",
+                    "tailwindcss": "^3.4.1",
+                    "autoprefixer": "^10.4.14",
+                    "postcss": "^8.4.24",
+                    "tailwindcss-animate": "^1.0.7",
                 },
-                "engines": {"node": ">=18.0.0", "pnpm": ">=8.0.0"},
+                "engines": {"node": ">=18.0.0"},
                 "packageManager": "pnpm@8.15.0",
             }
             if self.spec.get("requires_supabase", False):
@@ -199,9 +262,16 @@ class AppGenerator:
             package_json["devDependencies"].update(
                 {
                     "tailwindcss": "^3.4.1",
+                    "autoprefixer": "^10.4.14",
+                    "postcss": "^8.4.24",
+                    "tailwindcss-animate": "^1.0.7",
                 }
             )
-            package_json["engines"] = {"node": ">=18.0.0", "pnpm": ">=8.0.0"}
+            # Remove workspace field if it exists
+            if "workspace" in package_json:
+                del package_json["workspace"]
+
+            package_json["engines"] = {"node": ">=18.0.0"}
             package_json["packageManager"] = "pnpm@8.15.0"
             with open(package_json_path, "w") as f:
                 json.dump(package_json, f, indent=2)
@@ -264,6 +334,25 @@ class AppGenerator:
             "requires_supabase": str(self.spec.get("requires_supabase", False)).lower(),
         }
         template_vars.update(self._get_base_template_vars())
+
+        # Helper function to try multiple template path variations for templates with special characters
+        def try_template_paths(base_path, template_name):
+            # Priority ordered list of path formats to try
+            path_formats = [
+                f"{template_name}",
+                f"{template_name.replace('[id]', '{id}')}",
+                f"{template_name.replace('{id}', '[id]')}",
+                f"{template_name.replace('[id]', '%7Bid%7D')}",
+            ]
+
+            for path_format in path_formats:
+                template_file = base_path / path_format
+                if template_file.exists():
+                    return template_file
+
+            # If no variation exists, return the original path
+            return base_path / template_name
+
         types_dir = self.output_dir / "src" / "types"
         types_dir.mkdir(parents=True, exist_ok=True)
         self.render_template(
@@ -317,13 +406,22 @@ class AppGenerator:
             entity_page_dir / "page.tsx",
             template_vars,
         )
+
+        # For paths with special characters like [id], try multiple formats
         entity_id_dir = entity_page_dir / "[id]"
         entity_id_dir.mkdir(parents=True, exist_ok=True)
+
+        # Use try_template_paths for templates with special characters
+        id_template_path = try_template_paths(
+            template_path / "app" / "entities",
+            "[id]/page.tsx.template"
+        )
         self.render_template(
-            template_path / "app" / "entities" / "[id]" / "page.tsx.template",
+            id_template_path,
             entity_id_dir / "page.tsx",
             template_vars,
         )
+
         new_dir = entity_page_dir / "new"
         new_dir.mkdir(parents=True, exist_ok=True)
         self.render_template(
@@ -331,13 +429,21 @@ class AppGenerator:
             new_dir / "page.tsx",
             template_vars,
         )
+
         edit_dir = entity_id_dir / "edit"
         edit_dir.mkdir(parents=True, exist_ok=True)
+
+        # Use try_template_paths for edit template with special characters
+        edit_template_path = try_template_paths(
+            template_path / "app" / "entities",
+            "[id]/edit/page.tsx.template"
+        )
         self.render_template(
-            template_path / "app" / "entities" / "[id]" / "edit" / "page.tsx.template",
+            edit_template_path,
             edit_dir / "page.tsx",
             template_vars,
         )
+
         if entity_relationships:
             self._generate_relationship_code(entity_name, entity_relationships)
         print(f"Generated files for entity '{entity_name}' using Next.js App Router")
@@ -390,9 +496,31 @@ class AppGenerator:
             return
         utils_dir = self.output_dir / "src" / "utils"
         utils_dir.mkdir(parents=True, exist_ok=True)
+
+        # Path to the supabase util template
         supabase_util_template = template_path / "utils" / "supabase.ts.template"
+
+        # Check if template exists
+        if not supabase_util_template.exists():
+            print(f"Warning: Supabase template not found at {supabase_util_template}, trying alternative formats")
+            alt_templates = [
+                template_path / "utils" / "supabase.ts.template",
+                template_path / "utils" / "supabase.template.ts",
+                template_path / "utils" / "supabase.template"
+            ]
+
+            for alt_template in alt_templates:
+                if alt_template.exists():
+                    supabase_util_template = alt_template
+                    print(f"Using alternative template: {alt_template}")
+                    break
+            else:
+                print(f"No supabase template found, skipping supabase config generation")
+                return
+
         supabase_util_output = utils_dir / "supabase.ts"
-        self.render_template(supabase_util_template, supabase_util_output, self._get_base_template_vars())
+        if not supabase_util_output.exists():
+            self.render_template(supabase_util_template, supabase_util_output, self._get_base_template_vars())
         env_file = self.output_dir / ".env.local"
         if not env_file.exists():
             with open(env_file, "w") as f:

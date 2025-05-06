@@ -2,10 +2,10 @@
 
 import React, { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { fetch{{entity_type}}, update{{entity_type}} } from '../../../../services/{{entity_name}}Service';
-import { {{entity_type}} } from '../../../../types/{{entity_name}}';
+import { fetch{{$ entity_type $}}, update{{$ entity_type $}} } from '../../../../services/{{$ entity_name $}}Service';
+import { {{$ entity_type $}} } from '../../../../types/{{$ entity_name $}}';
 
-export default function Edit{{entity_type}}Page() {
+export default function Edit{{$ entity_type $}}Page() {
   const params = useParams();
   const router = useRouter();
   const id = params.id as string;
@@ -17,20 +17,20 @@ export default function Edit{{entity_type}}Page() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    async function load{{entity_type}}() {
+    async function load{{$ entity_type $}}() {
       try {
-        const data = await fetch{{entity_type}}(id);
+        const data = await fetch{{$ entity_type $}}(id);
         setName(data.name);
         setDescription(data.description || '');
       } catch (err) {
-        setError('Failed to load {{entity_name}}');
+        setError('Failed to load {{$ entity_name $}}');
         console.error(err);
       } finally {
         setLoading(false);
       }
     }
 
-    load{{entity_type}}();
+    load{{$ entity_type $}}();
   }, [id]);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -38,11 +38,11 @@ export default function Edit{{entity_type}}Page() {
     setSaving(true);
 
     try {
-      await update{{entity_type}}(id, { name, description });
-      router.push(`/{{entity_name}}s/${id}`);
+      await update{{$ entity_type $}}(id, { name, description });
+      router.push(`/{{$ entity_name $}}s/${id}`);
       router.refresh();
     } catch (error) {
-      setError(error instanceof Error ? error.message : 'Failed to update {{entity_name}}');
+      setError(error instanceof Error ? error.message : 'Failed to update {{$ entity_name $}}');
     } finally {
       setSaving(false);
     }
@@ -53,7 +53,7 @@ export default function Edit{{entity_type}}Page() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold mb-6">Edit {{entity_type}}</h1>
+      <h1 className="text-2xl font-bold mb-6">Edit {{$ entity_type $}}</h1>
 
       <div className="bg-white shadow rounded-lg p-6">
         <form onSubmit={handleSubmit}>

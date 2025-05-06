@@ -20,7 +20,7 @@ export default function HomePage() {
           Welcome to Your Genesis App
         </h1>
         <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-          This is a Next.js application with Ant Design and CSS Modules for styling.
+          This is a Next.js application with Tailwind CSS and CSS Modules for styling.
         </p>
       </div>
 
@@ -56,7 +56,7 @@ export default function HomePage() {
           <h2 className="text-xl font-semibold text-gray-800 mb-4">Features</h2>
           <ul className="list-disc list-inside text-gray-600">
             <li>Next.js with App Router</li>
-            <li>Ant Design for UI components</li>
+            <li>Tailwind CSS for styling</li>
             <li>CSS Modules for styling</li>
             <li>PWA support for offline access</li>
             <li>Modular architecture</li>

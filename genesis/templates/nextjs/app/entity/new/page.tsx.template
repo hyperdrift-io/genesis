@@ -1,34 +1,34 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import {{entity_type}}Form from '../../../components/{{entity_type}}Form';
+import {{$ entity_type $}}Form from '../../../components/{{$ entity_type $}}Form';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 
-export default function Create{{entity_type}}Page() {
+export default function Create{{$ entity_type $}}Page() {
   const router = useRouter();
 
   const handleSuccess = () => {
-    router.push('/{{plural_name}}');
+    router.push('/{{$ entity_name $}}s');
   };
 
   return (
     <div className="max-w-4xl mx-auto">
       <div className="mb-4">
         <Link
-          href="/{{plural_name}}"
+          href="/{{$ entity_name $}}s"
           className="text-blue-600 hover:text-blue-800 flex items-center"
         >
-          <ArrowLeft className="w-4 h-4 mr-1" /> Back to {{entity_type}}s
+          <ArrowLeft className="w-4 h-4 mr-1" /> Back to {{$ entity_type $}}s
         </Link>
       </div>
 
-      <{{entity_type}}Form onSuccess={handleSuccess} />
+      <{{$ entity_type $}}Form onSuccess={handleSuccess} />
     </div>
   );
 }
 
 export const metadata = {
-  title: 'Create {{entity_type}}',
-  description: 'Create a new {{entity_type}}',
+  title: 'Create {{$ entity_type $}}',
+  description: 'Create a new {{$ entity_type $}}',
 };
