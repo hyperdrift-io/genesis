@@ -1,6 +1,6 @@
 # Task-Manager
 
-A task management app
+A task management app built with Next.js, React 19, and shadcn/ui.
 
 ## Getting Started
 
@@ -16,26 +16,44 @@ pnpm dev
 
 ## Features
 
-- Authentication
-- Persistence
+- Create tasks with name, description, and additional properties
+- Assign tasks to users
+- Track task progress with different statuses
+- Set priority levels and due dates
+- Filter and search tasks
 
+## Tech Stack
+
+- **Frontend Framework**: Next.js 15
+- **UI Library**: React 19
+- **Component Library**: shadcn/ui
+- **Styling**: Tailwind CSS
+- **State Management**: Zustand
+- **Icons**: Lucide Icons
+
+## React 19 Compatibility
+
+This project uses React 19 with shadcn/ui components. All dependencies have been configured to work with React 19.
+
+For more information on React 19 compatibility with shadcn/ui, see the [official documentation](https://ui.shadcn.com/docs/react-19).
 
 ## Development Guidelines
 
-Refer to the `.cursorrules` file in the project root for coding standards and best practices to ensure consistency across the codebase.
-## Supabase Setup
+Please refer to the development guidelines located in:
 
-This application is configured to use Supabase for data storage. To set it up:
+- [Main Developer Guide](./docs/rules/DEV-GUIDE.md)
+- [UI Components Guide](./docs/rules/COMPONENTS.md)
+- [Cursor Rules](./.cursor/rules.MD)
 
-1. Create a Supabase account and project at [supabase.com](https://supabase.io)
-2. Copy your project URL and anon key from the API settings
-3. Add these to your `.env.local` file:
+## Project Structure
 
-```
-NEXT_PUBLIC_SUPABASE_URL=your-supabase-url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
-```
+- `src/app/` - Next.js app router pages
+- `src/components/` - UI components
+- `src/store/` - Zustand state management
+- `src/types/` - TypeScript type definitions
+- `src/services/` - Data services
+- `docs/rules/` - Development guidelines
 
-4. Start your development server with `pnpm dev`
+## License
 
-Note: The application includes a fallback to localStorage when Supabase credentials are not provided, which is useful for development.
+This project is licensed under the MIT License.

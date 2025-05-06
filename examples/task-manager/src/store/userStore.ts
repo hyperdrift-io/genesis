@@ -3,14 +3,7 @@
 import { create } from 'zustand';
 import { User } from '@/types/user';
 
-import * as userService from '@/services/userSupabaseService';
-
-
-// CURSOR_RULE: If persistence is needed:
-// 1. Add Supabase dependencies to package.json
-// 2. Create supabase client utility
-// 3. Implement supabaseEntityService.ts for this entity
-// 4. Update this import to use the Supabase service
+import * as userService from '@/services/userService';
 
 /**
  * Store for managing user state

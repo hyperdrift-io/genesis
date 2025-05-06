@@ -163,7 +163,38 @@ class AppGenerator:
         }
 
     def _process_root_templates(self, template_path):
+        """Process top-level template files."""
         template_vars = self._get_base_template_vars()
+
+        # Create directories if they don't exist
+        cursor_dir = self.output_dir / ".cursor"
+        cursor_dir.mkdir(exist_ok=True)
+
+        docs_dir = self.output_dir / "docs"
+        docs_dir.mkdir(exist_ok=True)
+
+        rules_dir = docs_dir / "rules"
+        rules_dir.mkdir(exist_ok=True)
+
+        # Handle .cursor/rules.MD
+        cursor_rules_template = template_path / ".cursor" / "rules.MD.template"
+        if cursor_rules_template.exists():
+            cursor_rules_output = cursor_dir / "rules.MD"
+            self.render_template(cursor_rules_template, cursor_rules_output, template_vars)
+
+        # Handle dev-guide.md -> docs/rules/DEV-GUIDE.md
+        dev_guide_template = template_path / "dev-guide.md.template"
+        if dev_guide_template.exists():
+            dev_guide_output = rules_dir / "DEV-GUIDE.md"
+            self.render_template(dev_guide_template, dev_guide_output, template_vars)
+
+        # Process COMPONENTS.md
+        components_md_template = template_path / "COMPONENTS.md.template"
+        if components_md_template.exists():
+            components_md_output = rules_dir / "COMPONENTS.md"
+            self.render_template(components_md_template, components_md_output, template_vars)
+
+        # Process other root templates
         root_templates = [
             ("app/layout.tsx.template", "src/app/layout.tsx"),
             ("app/page.tsx.template", "src/app/page.tsx"),
@@ -172,16 +203,17 @@ class AppGenerator:
             ("postcss.config.js.template", "postcss.config.js"),
             ("tailwind.config.js.template", "tailwind.config.js"),
             ("README.md.template", "README.md"),
+            ("package.json.template", "package.json"),
             ("lib/utils.ts.template", "src/lib/utils.ts"),
             ("components/ui/button.tsx.template", "src/components/ui/button.tsx"),
             ("components/ui/card.tsx.template", "src/components/ui/card.tsx"),
             ("components/ui/input.tsx.template", "src/components/ui/input.tsx"),
             ("components/ui/label.tsx.template", "src/components/ui/label.tsx"),
+            ("components/ui/select.tsx.template", "src/components/ui/select.tsx"),
+            ("components/ui/badge.tsx.template", "src/components/ui/badge.tsx"),
             ("components/ui/textarea.tsx.template", "src/components/ui/textarea.tsx"),
-            (".cursorrules.json.template", ".cursorrules.json"),
-            ("COMPONENTS.md.template", "docs/rules/COMPONENTS.md"),
-            ("dev-guide.md.template", "DEV-GUIDE.md"),
         ]
+
         for template_rel_path, output_rel_path in root_templates:
             # Normalize path separators
             template_rel_path = template_rel_path.replace('\\', '/')
@@ -199,102 +231,6 @@ class AppGenerator:
                 self.output_dir / output_rel_path,
                 template_vars,
             )
-        package_json_path = self.output_dir / "package.json"
-        if not package_json_path.exists():
-            package_json = {
-                "name": self.spec.get("name", "genesis-app"),
-                "version": "0.1.0",
-                "private": True,
-                "scripts": {
-                    "dev": "next dev",
-                    "build": "next build",
-                    "start": "next start",
-                    "lint": "next lint",
-                },
-                "dependencies": {
-                    "next": "^15.0.0",
-                    "react": "^18.3.1",
-                    "react-dom": "^18.3.1",
-                    "zustand": "^4.5.0",
-                    "lucide-react": "^0.312.0",
-                    "class-variance-authority": "^0.7.0",
-                    "clsx": "^2.1.0",
-                },
-                "devDependencies": {
-                    "typescript": "^5.3.3",
-                    "@types/react": "^18.2.48",
-                    "@types/node": "^20.11.0",
-                    "@types/react-dom": "^18.2.18",
-                    "tailwindcss": "^3.4.1",
-                    "autoprefixer": "^10.4.14",
-                    "postcss": "^8.4.24",
-                    "tailwindcss-animate": "^1.0.7",
-                },
-                "engines": {"node": ">=18.0.0"},
-                "packageManager": "pnpm@8.15.0",
-            }
-            if self.spec.get("requires_supabase", False):
-                package_json["dependencies"]["@supabase/supabase-js"] = "^2.39.3"
-            with open(package_json_path, "w") as f:
-                json.dump(package_json, f, indent=2)
-        else:
-            with open(package_json_path, "r") as f:
-                package_json = json.load(f)
-            package_json["name"] = self.spec.get("name", "genesis-app")
-            package_json["description"] = self.spec.get("description", "An app generated by Genesis")
-            if "dependencies" not in package_json:
-                package_json["dependencies"] = {}
-            package_json["dependencies"].update(
-                {
-                    "next": "^15.0.0",
-                    "react": "^18.3.1",
-                    "react-dom": "^18.3.1",
-                    "zustand": "^4.5.0",
-                    "lucide-react": "^0.312.0",
-                    "class-variance-authority": "^0.7.0",
-                    "clsx": "^2.1.0",
-                }
-            )
-            if self.spec.get("requires_supabase", False):
-                package_json["dependencies"]["@supabase/supabase-js"] = "^2.39.3"
-            if "devDependencies" not in package_json:
-                package_json["devDependencies"] = {}
-            package_json["devDependencies"].update(
-                {
-                    "tailwindcss": "^3.4.1",
-                    "autoprefixer": "^10.4.14",
-                    "postcss": "^8.4.24",
-                    "tailwindcss-animate": "^1.0.7",
-                }
-            )
-            # Remove workspace field if it exists
-            if "workspace" in package_json:
-                del package_json["workspace"]
-
-            package_json["engines"] = {"node": ">=18.0.0"}
-            package_json["packageManager"] = "pnpm@8.15.0"
-            with open(package_json_path, "w") as f:
-                json.dump(package_json, f, indent=2)
-        components_json_path = self.output_dir / "components.json"
-        if not components_json_path.exists():
-            components_json = {
-                "$schema": "https://ui.shadcn.com/schema.json",
-                "style": "default",
-                "rsc": True,
-                "tsx": True,
-                "tailwind": {
-                    "config": "tailwind.config.js",
-                    "css": "src/app/globals.css",
-                    "baseColor": "slate",
-                    "cssVariables": True,
-                },
-                "aliases": {"components": "@/components", "utils": "@/lib/utils"},
-            }
-            with open(components_json_path, "w") as f:
-                json.dump(components_json, f, indent=2)
-        tsconfig_path = self.output_dir / "tsconfig.json"
-        if not tsconfig_path.exists():
-            self.render_template(template_path / "tsconfig.json.template", tsconfig_path, template_vars)
 
     def _copy_template_base(self, src_dir, dest_dir):
         for item in src_dir.iterdir():
@@ -567,3 +503,75 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
 Note: The application includes a fallback to localStorage when Supabase credentials are not provided, which is useful for development.
 """
                     )
+
+    def _setup_project_structure(self):
+        """Creates the basic project structure."""
+        # Create the app directory and subdirectories
+        app_dir = self.output_dir / "src" / "app"
+        app_dir.mkdir(parents=True, exist_ok=True)
+
+        # Create documentation directories
+        docs_dir = self.output_dir / "docs"
+        docs_dir.mkdir(exist_ok=True)
+
+        rules_dir = docs_dir / "rules"
+        rules_dir.mkdir(exist_ok=True)
+
+        # Create .cursor directory for rules.MD
+        cursor_dir = self.output_dir / ".cursor"
+        cursor_dir.mkdir(exist_ok=True)
+
+        # Create components directory
+        components_dir = self.output_dir / "src" / "components"
+        components_dir.mkdir(parents=True, exist_ok=True)
+
+        # Create services directory
+        services_dir = self.output_dir / "src" / "services"
+        services_dir.mkdir(parents=True, exist_ok=True)
+
+        # Create store directory
+        store_dir = self.output_dir / "src" / "store"
+        store_dir.mkdir(parents=True, exist_ok=True)
+
+        # Create types directory
+        types_dir = self.output_dir / "src" / "types"
+        types_dir.mkdir(parents=True, exist_ok=True)
+
+        # Create utils directory
+        utils_dir = self.output_dir / "src" / "utils"
+        utils_dir.mkdir(parents=True, exist_ok=True)
+
+        return {
+            "app_dir": app_dir,
+            "components_dir": components_dir,
+            "services_dir": services_dir,
+            "store_dir": store_dir,
+            "types_dir": types_dir,
+            "utils_dir": utils_dir,
+            "docs_dir": docs_dir,
+            "rules_dir": rules_dir,
+            "cursor_dir": cursor_dir
+        }
+
+    def _generate_project_files(self, template_path):
+        """Generate the main project files from templates."""
+        # Process template files
+        self._process_root_templates(template_path)
+
+        # Generate .cursor/rules.MD
+        cursor_dir = self.output_dir / ".cursor"
+        cursor_dir.mkdir(exist_ok=True)
+
+        cursor_rules_template = template_path / ".cursor" / "rules.MD.template"
+        if cursor_rules_template.exists():
+            cursor_rules_output = cursor_dir / "rules.MD"
+            self.render_template(cursor_rules_template, cursor_rules_output, self._get_base_template_vars())
+
+        # Copy dev-guide.md to docs/rules/DEV-GUIDE.md
+        docs_rules_dir = self.output_dir / "docs" / "rules"
+        docs_rules_dir.mkdir(parents=True, exist_ok=True)
+
+        dev_guide_template = template_path / "dev-guide.md.template"
+        if dev_guide_template.exists():
+            dev_guide_output = docs_rules_dir / "DEV-GUIDE.md"
+            self.render_template(dev_guide_template, dev_guide_output, self._get_base_template_vars())

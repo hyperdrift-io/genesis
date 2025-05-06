@@ -245,3 +245,7 @@ out/
 # Vite
 dist/
 dist-ssr/
+
+
+# Genesis
+examples/

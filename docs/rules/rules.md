@@ -58,7 +58,13 @@
 ## Rule 1: Query Routing
 All feature or implementation queries must be checked against the rules in this document before proceeding. This ensures consistent and minimal framework growth.
 
-## Rule 2: Supabase Requirement
+## Rule 2: UI Components
+Always use the shadcn UI library to reduce complexity. Always prefer shadcn components over direct Radix UI primitives when possible. Use the latest version compatible with React 19.
+
+## Rule 3: React 19 Compatibility
+All code should be written with React 19 compatibility in mind. When adding new dependencies, ensure they are compatible with React 19.
+
+## Rule 4: Supabase Requirement
 If a requested feature requires persistence, relational queries, authentication, real-time data, or any other functionality typically provided by a backend database, you MUST use Supabase to fulfill this requirement. Do not include Supabase unless such a requirement is present.
 
 ---

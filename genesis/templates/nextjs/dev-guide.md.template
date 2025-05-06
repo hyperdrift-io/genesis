@@ -5,19 +5,6 @@
 1. Install dependencies: `pnpm install`
 2. Start the dev server: `pnpm dev`
 
-{%$ if requires_supabase $%}
-## Supabase Setup
-
-This project uses Supabase for backend services. To set up:
-
-1. Create a Supabase project at [supabase.com](https://supabase.com)
-2. Copy your project URL and anon key
-3. Create a `.env.local` file from `.env.example`
-4. Update the Supabase URL and anon key in `.env.local`
-5. Set up your database tables according to the entity models in this project
-
-{%$ endif $%}
-
 ## Project Structure
 
 - `src/app/` - Next.js app directory
@@ -25,16 +12,6 @@ This project uses Supabase for backend services. To set up:
 - `src/services/` - Data services (API or localStorage)
 - `src/store/` - Zustand stores for state management
 - `src/types/` - TypeScript types
-
-{%$ if requires_supabase $%}
-### Supabase Entities
-- Each entity has a corresponding Supabase service in `src/services/`.
-- Update the Supabase table schema as needed.
-{%$ else $%}
-### Local-First Entities
-- Each entity is stored in browser localStorage by default.
-- You can migrate to Supabase later by updating the service files.
-{%$ endif $%}
 
 ## Adding Features
 - Add new entities by updating `genesis.json` and re-running Genesis.
@@ -44,31 +21,31 @@ This project uses Supabase for backend services. To set up:
 - Add/modify Zustand stores in `src/store/`.
 - Add/modify services in `src/services/`.
 
-{%$ if requires_supabase $%}
-## Supabase Migrations
-- Use Supabase SQL editor or CLI for migrations.
-- Keep your schema in sync with your types.
-{%$ endif $%}
+## Database Integration
+For features requiring data persistence, authentication, or real-time functionality:
+- Use Supabase as the backend solution
+- Configure Supabase connection in `.env.local` with your project credentials
+- Implement entity services using the Supabase client
+- See the Supabase documentation at [https://supabase.com/docs](https://supabase.com/docs)
 
 ## Tech Stack Overview
 
 | Technology | Version | Purpose | Documentation |
 |------------|---------|---------|---------------|
 | Next.js | ^15.0.0 | React framework | [Docs](https://nextjs.org/docs) |
-| React | ^18.3.1 | UI library | [Docs](https://react.dev) |
+| React | ^19.0.0 | UI library | [Docs](https://react.dev) |
 | TypeScript | ^5.3.3 | Type safety | [Docs](https://www.typescriptlang.org/docs/) |
 | Tailwind CSS | ^3.4.1 | Utility-first CSS | [Docs](https://tailwindcss.com/docs) |
 | shadcn/ui | Latest | UI components | [Docs](https://ui.shadcn.com/docs) |
-| Lucide Icons | ^0.312.0 | Icon library | [Guide](https://lucide.dev/guide) |
-| Zustand | ^4.5.0 | State management | [Docs](https://docs.pmnd.rs/zustand) |
-{%$ if requires_supabase $%}| Supabase | ^2.39.3 | Backend services | [Docs](https://supabase.com/docs) |
-{%$ endif $%}
+| Lucide Icons | ^0.338.0 | Icon library | [Guide](https://lucide.dev/guide) |
+| Zustand | ^4.4.7 | State management | [Docs](https://docs.pmnd.rs/zustand) |
+| Supabase | ^2.39.3 | Backend services | [Docs](https://supabase.com/docs) |
 
 ## UI Framework
 
 We use [Tailwind CSS](https://tailwindcss.com) for styling with [shadcn/ui](https://ui.shadcn.com) components. This combination provides a comprehensive set of accessible, production-ready components for rapid development and a consistent user experience.
 
-For detailed component usage, see [docs/rules/COMPONENTS.md](./docs/rules/COMPONENTS.md).
+For detailed component usage, see [COMPONENTS.md](./COMPONENTS.md).
 
 ### Key UI Patterns
 
@@ -91,28 +68,6 @@ function Component() {
 }
 ```
 
-{%$ if requires_supabase $%}
-## Supabase Integration
-
-This project uses Supabase for backend services. The connection is configured in `src/utils/supabase.ts`.
-
-```tsx
-// Using Supabase client
-import { supabase } from "@/utils/supabase";
-
-// Example query
-const { data, error } = await supabase
-  .from('table_name')
-  .select('*');
-```
-
-See the [Supabase documentation](https://supabase.com/docs) for more details.
-{%$ else $%}
-## Local Storage
-
-This project uses browser localStorage for data persistence in development. When you're ready to upgrade to a real backend, look for the `CURSOR_RULE: REPLACE_WITH_SUPABASE` comments.
-{%$ endif $%}
-
 ## Development Workflow
 
 1. **Run the development server**:
@@ -120,17 +75,13 @@ This project uses browser localStorage for data persistence in development. When
    pnpm dev
    ```
 
-2. **Use Cursor rules** to get inline documentation and guidance (look for patterns in the `.cursorrules.json` file).
+2. **Follow guidelines** in the docs/rules directory for development standards.
 
 ## Resources
 
 - [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features
 - [Tailwind CSS Documentation](https://tailwindcss.com/docs) - utility-first CSS
-- [shadcn/ui Documentation](https://ui.shadcn.com/docs) - UI components
+- [shadcn/ui Documentation](https://ui.shadcn.com/docs/react-19) - UI components for React 19
 - [Lucide Icons](https://lucide.dev/icons) - icon gallery
 - [Zustand Documentation](https://docs.pmnd.rs/zustand) - state management
-{%$ if requires_supabase $%}- [Supabase Documentation](https://supabase.com/docs) - backend services
-{%$ endif $%}
-
-- Use Tailwind CSS utility classes for styling components.
-- Use shadcn/ui components for UI elements.
+- [Supabase Documentation](https://supabase.com/docs) - backend services

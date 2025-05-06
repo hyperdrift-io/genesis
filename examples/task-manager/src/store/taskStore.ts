@@ -3,14 +3,7 @@
 import { create } from 'zustand';
 import { Task } from '@/types/task';
 
-import * as taskService from '@/services/taskSupabaseService';
-
-
-// CURSOR_RULE: If persistence is needed:
-// 1. Add Supabase dependencies to package.json
-// 2. Create supabase client utility
-// 3. Implement supabaseEntityService.ts for this entity
-// 4. Update this import to use the Supabase service
+import * as taskService from '@/services/taskService';
 
 /**
  * Store for managing task state

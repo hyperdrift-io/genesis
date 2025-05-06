@@ -37,7 +37,7 @@ Tailwind CSS is a utility-first CSS framework that allows you to build designs d
 
 ## Using shadcn/ui Components
 
-This project includes shadcn/ui components, which are built on top of Radix UI and styled with Tailwind CSS:
+This project uses shadcn/ui components, which provide a set of reusable, accessible UI components styled with Tailwind CSS:
 
 ### Button Component
 ```tsx
@@ -51,32 +51,42 @@ import { Button } from "@/components/ui/button";
 <Button variant="link">Link</Button>
 ```
 
+### Card Component
+```tsx
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
+
+<Card>
+  <CardHeader>
+    <CardTitle>Card Title</CardTitle>
+    <CardDescription>Card Description</CardDescription>
+  </CardHeader>
+  <CardContent>
+    <p>Card Content</p>
+  </CardContent>
+  <CardFooter>
+    <p>Card Footer</p>
+  </CardFooter>
+</Card>
+```
+
 ### Form Components
 ```tsx
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Form, FormField, FormItem, FormLabel, FormControl } from "@/components/ui/form";
+import { Label } from "@/components/ui/label";
 
-<Form {...form.props}>
-  <FormField
-    control={form.control}
-    name="username"
-    render={({ field }) => (
-      <FormItem>
-        <FormLabel>Username</FormLabel>
-        <FormControl>
-          <Input placeholder="Enter username" {...field} />
-        </FormControl>
-      </FormItem>
-    )}
-  />
+<div className="space-y-4">
+  <div className="space-y-2">
+    <Label htmlFor="username">Username</Label>
+    <Input id="username" placeholder="Enter username" />
+  </div>
   <Button type="submit">Submit</Button>
-</Form>
+</div>
 ```
 
 ## Using Lucide Icons
 
-This project includes Lucide for beautiful, consistent icons. To use them:
+This project includes Lucide for beautiful, consistent icons:
 
 ```tsx
 import { Heart, Share, Trash } from "lucide-react";
@@ -90,7 +100,7 @@ Browse all available icons at [lucide.dev/icons](https://lucide.dev/icons).
 
 ## State Management with Zustand
 
-Zustand is used for state management. Example usage:
+Zustand is used for state management:
 
 ```tsx
 import { useUserStore } from '@/store/userStore';
@@ -104,10 +114,20 @@ function Component() {
 ## Styling Guidelines
 
 - Use **Tailwind CSS classes** directly in your JSX for styling components
-- Use the **cn() utility** for conditionally applying classes
+- Use the **cn() utility** for conditionally applying classes:
+  ```tsx
+  import { cn } from "@/lib/utils";
+  
+  <div className={cn(
+    "base-class always-applied",
+    condition && "class-applied-conditionally"
+  )}>
+    Content
+  </div>
+  ```
 - Follow the **utility-first approach** - compose small utility classes rather than writing custom CSS
 - Maintain consistent spacing, colors, and typography using Tailwind's design system
 
-## Theming
+## React 19 Compatibility
 
-Tailwind CSS supports theming via the tailwind.config.js file. Customize colors, spacing, typography and more to match your brand identity.
+All UI components in this project are compatible with React 19. If you encounter any issues, please refer to the [shadcn/ui React 19 documentation](https://ui.shadcn.com/docs/react-19).

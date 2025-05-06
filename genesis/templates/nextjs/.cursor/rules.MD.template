@@ -1,0 +1,22 @@
+# Development Rules
+
+This project follows the development guidelines outlined in the `docs/rules` directory.
+
+## Important Documentation
+
+Please refer to the following documentation for development standards:
+
+- [Development Guide](../docs/rules/DEV-GUIDE.md) - Core development practices and guidelines
+- [Component Guidelines](../docs/rules/COMPONENTS.md) - Standards for using and creating UI components
+
+## About shadcn/ui
+
+We use [shadcn/ui](https://ui.shadcn.com/docs/react-19) with React 19 for our component library. Please refer to the official documentation for component usage and customization.
+
+## Database Integration
+
+For any features requiring persistence, relational queries, authentication, real-time data, or other database functionality, use Supabase as the backend solution. Do not implement custom database solutions or use other backend services unless explicitly required.
+
+## Standards
+
+All code contributions should adhere to these guidelines. When in doubt, check the referenced documentation or ask the development team.
