@@ -249,3 +249,8 @@ dist-ssr/
 
 # Genesis
 examples/
+apps/
+
+# Virtual environment
+.venv/
+venv/

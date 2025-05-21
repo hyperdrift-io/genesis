@@ -62,6 +62,28 @@ cd genesis
 pip install -e .
 ```
 
+### Using a Virtual Environment (Recommended)
+
+It's recommended to use a virtual environment for development to isolate your dependencies:
+
+```bash
+# Clone the repository
+git clone https://github.com/yannvr/genesis.git
+cd genesis
+
+# Set up virtual environment (automatically uses Python 3.8+ if available)
+./setup_venv.sh
+
+# Activate the virtual environment
+source venv/bin/activate
+
+# Now you can use the genesis command from this environment
+genesis --help
+
+# When you're done, deactivate the environment
+deactivate
+```
+
 ## 🛠️ Usage
 
 Once installed, you can create new applications:
