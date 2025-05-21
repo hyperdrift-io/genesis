@@ -9,10 +9,11 @@ from jinja2 import Environment, FileSystemLoader, select_autoescape
 class AppGenerator:
     """Generate application files from a specification"""
 
-    def __init__(self, spec, output_dir):
+    def __init__(self, spec, output_dir, verbose=False):
         self.spec = spec
         self.output_dir = Path(output_dir)
         self.template_dir = Path(__file__).parent.parent / "templates"
+        self.verbose = verbose
         self.env = Environment(
             loader=FileSystemLoader(str(self.template_dir)),
             autoescape=select_autoescape(["html", "tsx", "js", "ts"]),
@@ -29,7 +30,8 @@ class AppGenerator:
         template_rel = str(template_path.relative_to(self.template_dir))
         template_rel = os.path.normpath(template_rel).replace(os.sep, '/')
 
-        print(f"Rendering template: {template_rel} to {output_path}")
+        if self.verbose:
+            print(f"Rendering template: {template_rel} to {output_path}")
 
         # Try to load the template directly
         try:
@@ -49,9 +51,11 @@ class AppGenerator:
 
                 for alt_path in alt_paths:
                     try:
-                        print(f"Trying alternative template path: {alt_path}")
+                        if self.verbose:
+                            print(f"Trying alternative template path: {alt_path}")
                         template = self.env.get_template(alt_path)
-                        print(f"Successfully loaded alternative template: {alt_path}")
+                        if self.verbose:
+                            print(f"Successfully loaded alternative template: {alt_path}")
                         break
                     except Exception:
                         continue
@@ -65,7 +69,8 @@ class AppGenerator:
             output_path.parent.mkdir(parents=True, exist_ok=True)
             with open(output_path, "w") as f:
                 f.write(template.render(**context))
-            print(f"Successfully rendered {template_rel}")
+            if self.verbose:
+                print(f"Successfully rendered {template_rel}")
         except Exception as e:
             print(f"Error rendering template '{template_rel}': {str(e)}")
             print(f"Template context keys: {list(context.keys())}")
@@ -94,7 +99,7 @@ class AppGenerator:
             self._generate_entity(entity.get("name", "item"), template_path)
         if self.spec.get("requires_supabase", False):
             self._generate_supabase_config(template_path)
-        print(f"\nApplication generated successfully at: {self.output_dir}")
+        # The main success message is now printed by the CLI, not here
 
     def _get_base_template_vars(self):
         app_name = self.spec.get("name", "Genesis App")
@@ -261,7 +266,8 @@ class AppGenerator:
         for rel in self.spec.get("relationships", []):
             if rel.get("entity1") == entity_name or rel.get("entity2") == entity_name:
                 entity_relationships.append(rel)
-        print(f"Generating entity: {entity_name}")
+        if self.verbose:
+            print(f"Generating entity: {entity_name}")
         template_vars = {
             "entity_name": entity_name,
             "entity_type": entity_type,
@@ -382,7 +388,8 @@ class AppGenerator:
 
         if entity_relationships:
             self._generate_relationship_code(entity_name, entity_relationships)
-        print(f"Generated files for entity '{entity_name}' using Next.js App Router")
+        if self.verbose:
+            print(f"Generated files for entity '{entity_name}' using Next.js App Router")
 
     def _generate_relationship_code(self, entity_name, relationships):
         import_code = ""

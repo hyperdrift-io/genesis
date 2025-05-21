@@ -10,6 +10,7 @@ def main():
     parser.add_argument("--description", "-d", help="Description of the application")
     parser.add_argument("--functionality", "-f", help="Detailed functionality description")
     parser.add_argument("--output", "-o", help="Output directory", default=".")
+    parser.add_argument("--verbose", "-v", action="store_true", help="Show detailed output during generation")
     args = parser.parse_args()
     app_name = args.name.lower().replace(' ', '-')
     description = args.description
@@ -29,7 +30,7 @@ def main():
     spec['name'] = app_name
     spec['description'] = description
     output_dir = Path(args.output) / app_name
-    generator = AppGenerator(spec, output_dir)
+    generator = AppGenerator(spec, output_dir, verbose=args.verbose)
     generator.generate()
     print(f"\nApplication generated successfully at: {output_dir}")
     print("\nTo get started:")
