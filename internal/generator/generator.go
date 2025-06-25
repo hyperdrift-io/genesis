@@ -11,13 +11,35 @@ import (
 )
 
 type Generator struct {
-	outputDir string
+	outputDir      string
+	packageManager string
 }
 
 func New(outputDir string) *Generator {
 	return &Generator{
-		outputDir: outputDir,
+		outputDir:      outputDir,
+		packageManager: detectPackageManager(),
 	}
+}
+
+// detectPackageManager finds the fastest available package manager
+func detectPackageManager() string {
+	// Try bun first (fastest) - check both PATH and default location
+	if _, err := exec.LookPath("bun"); err == nil {
+		return "bun"
+	}
+	// Check bun's default installation location
+	if _, err := os.Stat(os.ExpandEnv("$HOME/.bun/bin/bun")); err == nil {
+		return "bun"
+	}
+	
+	// Fall back to pnpm (fast)
+	if _, err := exec.LookPath("pnpm"); err == nil {
+		return "pnpm"
+	}
+	
+	// Default to npm (slowest but always available)
+	return "npm"
 }
 
 func (g *Generator) CreateApp(appName, description string) error {
@@ -31,6 +53,7 @@ func (g *Generator) CreateApp(appName, description string) error {
 
 	cyan.Printf("🚀 Creating %s...\n", appName)
 	gray.Printf("Description: %s\n", description)
+	gray.Printf("Package Manager: %s ⚡\n", g.packageManager)
 	fmt.Println()
 
 	// Step 1: Create Nuxt app
@@ -54,39 +77,32 @@ func (g *Generator) CreateApp(appName, description string) error {
 	}
 	green.Println("✓ AI context generated")
 
-	// Step 4: Ensure Claude Code is available
-	yellow.Println("🤖 Checking for Claude Code...")
-	if err := g.ensureClaudeCode(); err != nil {
-		return fmt.Errorf("failed to ensure Claude Code: %w", err)
+	// Step 4: Create starter app template
+	yellow.Println("🎯 Creating starter template...")
+	if err := g.createStarterTemplate(appPath, appName, description); err != nil {
+		return fmt.Errorf("failed to create starter template: %w", err)
 	}
-	green.Println("✓ Claude Code ready")
-
-	// Step 5: Build the app with Claude
-	yellow.Println("🧠 Building app with AI...")
-	gray.Println("This may take a few minutes...")
-	if err := g.buildAppWithClaude(appPath, description); err != nil {
-		return fmt.Errorf("failed to build app with Claude: %w", err)
-	}
-	green.Println("✓ App built successfully")
+	green.Println("✓ Starter template created")
 
 	// Success message
 	fmt.Println()
-	green.Printf("🎉 %s created and built!\n", appName)
+	green.Printf("🎉 %s created successfully!\n", appName)
 	fmt.Println()
 	cyan.Println("Your app is ready:")
 	gray.Printf("  cd %s\n", appName)
-	gray.Println("  npm run dev")
+	gray.Printf("  %s run dev\n", g.packageManager)
 	fmt.Println()
-	cyan.Println("Continue development:")
-	gray.Println(`  claude "add user authentication"`)
-	gray.Println(`  claude "improve the UI design"`)
+	cyan.Println("Build with Claude Code:")
+	gray.Println(`  claude "Read the README.md and build the complete application"`)
+	fmt.Println()
+	yellow.Println("💡 The README.md contains the perfect AI prompt with all requirements")
 	fmt.Println()
 
 	return nil
 }
 
 func (g *Generator) createNuxtApp(appName string) error {
-	cmd := exec.Command("npx", "nuxi@latest", "init", appName, "--package-manager", "npm", "--git-init")
+	cmd := exec.Command("npx", "nuxi@latest", "init", appName, "--package-manager", g.packageManager, "--git-init")
 	cmd.Dir = g.outputDir
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
@@ -110,9 +126,25 @@ func (g *Generator) createNuxtApp(appName string) error {
 	return err
 }
 
+func (g *Generator) getBunCommand() string {
+	if _, err := exec.LookPath("bun"); err == nil {
+		return "bun"
+	}
+	return os.ExpandEnv("$HOME/.bun/bin/bun")
+}
+
 func (g *Generator) addNuxtUI(appPath string) error {
-	// First install dependencies
-	installCmd := exec.Command("npm", "install")
+	// First install dependencies using the detected package manager
+	var installCmd *exec.Cmd
+	switch g.packageManager {
+	case "bun":
+		installCmd = exec.Command(g.getBunCommand(), "install")
+	case "pnpm":
+		installCmd = exec.Command("pnpm", "install")
+	default:
+		installCmd = exec.Command("npm", "install")
+	}
+	
 	installCmd.Dir = appPath
 	installCmd.Stdout = os.Stdout
 	installCmd.Stderr = os.Stderr
@@ -129,52 +161,123 @@ func (g *Generator) addNuxtUI(appPath string) error {
 }
 
 func (g *Generator) generateDocumentation(appName, description, appPath string) error {
-	// Generate README.md
+	// Generate README.md with AI-optimized build instructions
 	readme := templates.GenerateReadme(appName, description)
 	readmePath := filepath.Join(appPath, "README.md")
 	if err := os.WriteFile(readmePath, []byte(readme), 0644); err != nil {
 		return fmt.Errorf("failed to write README.md: %w", err)
 	}
 
-	// Generate DEVELOPMENT.md
-	devGuide := templates.GenerateDevelopmentGuide()
-	devPath := filepath.Join(appPath, "DEVELOPMENT.md")
-	if err := os.WriteFile(devPath, []byte(devGuide), 0644); err != nil {
-		return fmt.Errorf("failed to write DEVELOPMENT.md: %w", err)
-	}
-
 	return nil
 }
 
-func (g *Generator) ensureClaudeCode() error {
-	// Check if claude is available
-	if err := exec.Command("claude", "--version").Run(); err != nil {
-		// Install claude-code
-		color.New(color.FgHiBlack).Println("Installing Claude Code...")
-		cmd := exec.Command("npm", "install", "-g", "@anthropic-ai/claude-code")
-		cmd.Stdout = os.Stdout
-		cmd.Stderr = os.Stderr
-		return cmd.Run()
+func (g *Generator) createStarterTemplate(appPath, appName, description string) error {
+	// Create a clean homepage with hero section, wrapped in UApp as required by Nuxt UI
+	appVue := fmt.Sprintf(`<template>
+  <UApp>
+    <div class="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <!-- Navigation -->
+      <nav class="bg-white dark:bg-gray-800 shadow">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="flex justify-between h-16">
+            <div class="flex items-center">
+              <h1 class="text-xl font-bold text-gray-900 dark:text-white">
+                %s
+              </h1>
+            </div>
+            <div class="flex items-center">
+              <UButton variant="outline" size="sm">
+                About
+              </UButton>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      <!-- Hero Section -->
+      <main class="max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:px-8">
+        <div class="text-center">
+          <h1 class="text-4xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-6xl">
+            %s
+          </h1>
+          <p class="mt-6 text-lg leading-8 text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+            %s
+          </p>
+          <div class="mt-10 flex items-center justify-center gap-x-6">
+            <UButton size="lg">
+              Get Started
+            </UButton>
+            <UButton variant="outline" size="lg">
+              Learn More
+            </UButton>
+          </div>
+        </div>
+
+        <!-- Feature placeholder -->
+        <div class="mt-20">
+          <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-8">
+            <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-4 text-center">
+              Ready to Build
+            </h2>
+            <p class="text-gray-600 dark:text-gray-300 text-center mb-6">
+              This is a starter template created by Genesis. Use Claude Code to build the actual functionality:
+            </p>
+            <div class="bg-gray-100 dark:bg-gray-700 rounded-lg p-4">
+              <code class="text-sm text-gray-800 dark:text-gray-200">
+                claude "build the functionality described in README.md"
+              </code>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </UApp>
+</template>
+
+<script setup>
+// This is a starter template - use Claude Code to build the actual functionality
+useHead({
+  title: '%s',
+  meta: [
+    { name: 'description', content: '%s' }
+  ]
+})
+</script>`, appName, appName, description, appName, description)
+
+	// Write the new app.vue
+	appVuePath := filepath.Join(appPath, "app.vue")
+	if err := os.WriteFile(appVuePath, []byte(appVue), 0644); err != nil {
+		return fmt.Errorf("failed to write app.vue: %w", err)
 	}
+
+	// Create assets directory and CSS file for Nuxt UI
+	assetsDir := filepath.Join(appPath, "assets", "css")
+	if err := os.MkdirAll(assetsDir, 0755); err != nil {
+		return fmt.Errorf("failed to create assets directory: %w", err)
+	}
+
+	// Create main CSS file with proper Nuxt UI imports (not Tailwind directives)
+	mainCSS := `@import "tailwindcss";
+@import "@nuxt/ui";`
+
+	mainCSSPath := filepath.Join(assetsDir, "main.css")
+	if err := os.WriteFile(mainCSSPath, []byte(mainCSS), 0644); err != nil {
+		return fmt.Errorf("failed to write main.css: %w", err)
+	}
+
+	// Update nuxt.config.ts to include the CSS file
+	nuxtConfig := `// https://nuxt.com/docs/api/configuration/nuxt-config
+export default defineNuxtConfig({
+  compatibilityDate: '2025-05-15',
+  devtools: { enabled: true },
+  modules: ['@nuxt/ui'],
+  css: ['~/assets/css/main.css']
+})`
+
+	nuxtConfigPath := filepath.Join(appPath, "nuxt.config.ts")
+	if err := os.WriteFile(nuxtConfigPath, []byte(nuxtConfig), 0644); err != nil {
+		return fmt.Errorf("failed to write nuxt.config.ts: %w", err)
+	}
+
 	return nil
-}
-
-func (g *Generator) buildAppWithClaude(appPath, description string) error {
-	buildPrompt := fmt.Sprintf(`Read the README.md and DEVELOPMENT.md files, then build this %s.
-
-Create:
-1. A modern homepage with hero section and proper navigation
-2. The main functionality as described in the README
-3. Proper page routing and navigation
-4. Use Nuxt UI components throughout
-5. Add proper styling with Tailwind CSS
-6. Make it responsive and accessible
-
-Follow the best practices in DEVELOPMENT.md. Build a complete, working application.`, description)
-
-	cmd := exec.Command("claude", buildPrompt)
-	cmd.Dir = appPath
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-	return cmd.Run()
 } 
