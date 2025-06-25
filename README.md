@@ -1,12 +1,10 @@
 # Genesis V2
 
-Minimal app generator using Nuxt + AI-driven development
+**One-command app creation** using Nuxt + Claude Code integration
 
 ## What Genesis V2 Does
 
-Genesis creates a basic Nuxt 3 + Nuxt UI app and generates documentation that gives Claude (or other AI tools) the context needed to build your app intelligently.
-
-**No templates. No complex rules. Just minimal setup + AI intelligence.**
+Genesis creates a complete, working Nuxt 3 app automatically using AI. **No manual steps, no configuration** - just describe what you want and get a fully built app.
 
 ## Installation
 
@@ -17,39 +15,73 @@ npm install -g genesis
 ## Usage
 
 ```bash
-genesis my-app "E-commerce store for handmade jewelry"
-cd my-app
-npm run dev
+# One command creates AND builds your entire app
+genesis my-store "E-commerce store for handmade jewelry"
 
-# Then use Claude to build it
-claude "Read the README and build this app step by step"
+# Wait a few minutes while AI builds your app...
+# ✓ Nuxt app created
+# ✓ Nuxt UI added  
+# ✓ AI context generated
+# ✓ Claude Code ready
+# ✓ App built successfully
+
+cd my-store
+npm run dev
+# Your complete app is ready! 🎉
 ```
 
 ## How It Works
 
 1. **Creates Nuxt 3 app** with `npx nuxi init`
 2. **Adds Nuxt UI** with `npx nuxi module add ui`  
-3. **Generates README.md** with your app description and context
+3. **Generates README.md** with your app description
 4. **Generates DEVELOPMENT.md** with Nuxt UI best practices
-5. **You use Claude** to build the actual functionality
+5. **Installs Claude Code** (if not already installed)
+6. **Auto-builds the app** using Claude Code with intelligent prompts
 
-## Why This Approach Works
+## What You Get
 
-- **No config hell**: Just Nuxt + Nuxt UI defaults
-- **No maintenance**: AI does the intelligent work
-- **Always modern**: Uses latest Nuxt conventions
-- **Simple**: ~100 lines of code total
+A **complete, working application** with:
+- Modern homepage with hero section
+- Main functionality as described
+- Proper navigation and routing  
+- Nuxt UI components throughout
+- Responsive design with Tailwind CSS
+- Best practices and clean code
 
 ## Examples
 
 ```bash
-# Create different types of apps
-genesis blog-app "Personal blog with articles and comments"
-genesis store-app "E-commerce for vintage clothes"
-genesis saas-app "Project management tool for small teams"
+# E-commerce store
+genesis jewelry-store "E-commerce for handmade jewelry with custom sizing"
 
-# Claude builds them all using the same simple context
+# SaaS application  
+genesis project-tool "Project management tool for small teams with kanban boards"
+
+# Blog platform
+genesis tech-blog "Technical blog with article creation and comment system"
+
+# Each creates a complete, working app automatically
 ```
+
+## Continue Development
+
+After Genesis builds your app, continue enhancing it:
+
+```bash
+cd my-app
+claude "add user authentication with login/signup"
+claude "implement payment processing with Stripe"
+claude "add admin dashboard for content management"
+```
+
+## Why This Approach Works
+
+- **No templates to maintain** - AI generates fresh, modern code
+- **No configuration hell** - Works with Nuxt + Nuxt UI defaults  
+- **Always up-to-date** - Uses latest best practices
+- **Complete applications** - Not just scaffolding, but working apps
+- **AI-driven development** - Intelligent code generation and implementation
 
 ## Architecture
 
@@ -57,13 +89,13 @@ genesis saas-app "Project management tool for small teams"
 genesis/
 ├── bin/genesis.js           # CLI entry point
 ├── src/
-│   ├── index.js            # Main creation logic
-│   ├── readme-generator.js # Generates README context
+│   ├── index.js            # Main creation + Claude integration
+│   ├── readme-generator.js # Generates project context
 │   └── development-generator.js # Generates dev guidelines
 └── package.json
 ```
 
-**Total:** ~100 lines of JavaScript. That's it.
+**Result:** One command = Complete working app 🚀
 
 ---
 
