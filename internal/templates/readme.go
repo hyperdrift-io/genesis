@@ -57,9 +57,8 @@ bun run dev
 ## Build Instructions for AI
 1. **Install Claude Code** (if not already installed):
    `+"```"+`bash
-   npm install -g @anthropic-ai/claude-code
-   # or: bun add -g @anthropic-ai/claude-code
-   # or: pnpm add -g @anthropic-ai/claude-code
+   bun add -g @anthropic-ai/claude-code
+   # or: npm install -g @anthropic-ai/claude-code
    `+"```"+`
 
 2. **Read this README completely** to understand the requirements

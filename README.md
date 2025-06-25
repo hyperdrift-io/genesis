@@ -8,7 +8,26 @@
 
 Genesis creates a complete, working Nuxt 3 app automatically using AI. **No manual steps, no configuration** - just describe what you want and get a fully built app.
 
+**⚡ Powered by bun** for lightning-fast package management (5-10x faster than npm).
+
 ## Installation
+
+### Prerequisites
+
+**Bun is required** for lightning-fast package management:
+
+```bash
+# macOS/Linux
+curl -fsSL https://bun.sh/install | bash
+
+# Windows  
+powershell -c "irm bun.sh/install.ps1 | iex"
+
+# Or via npm
+npm install -g bun
+```
+
+Then restart your terminal.
 
 ### Download Binary (Recommended)
 
@@ -65,7 +84,7 @@ genesis my-store "E-commerce store for handmade jewelry"
 # ✓ App built successfully
 
 cd my-store
-npm run dev
+bun run dev
 # Your complete app is ready! 🎉
 ```
 
@@ -116,6 +135,7 @@ claude "add admin dashboard for content management"
 
 ## Why This Approach Works
 
+- **Lightning-fast performance** - Bun provides 5-10x faster package management than npm
 - **Single binary distribution** - No dependencies, no runtime required
 - **Fast startup** - Go performance vs Node.js
 - **No templates to maintain** - AI generates fresh, modern code

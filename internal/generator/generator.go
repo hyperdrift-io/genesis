@@ -15,31 +15,42 @@ type Generator struct {
 	packageManager string
 }
 
-func New(outputDir string) *Generator {
+func New(outputDir string) (*Generator, error) {
+	// Check bun installation first
+	if err := checkBunInstallation(); err != nil {
+		return nil, err
+	}
+	
 	return &Generator{
 		outputDir:      outputDir,
-		packageManager: detectPackageManager(),
-	}
+		packageManager: "bun",
+	}, nil
 }
 
-// detectPackageManager finds the fastest available package manager
-func detectPackageManager() string {
-	// Try bun first (fastest) - check both PATH and default location
+// checkBunInstallation verifies bun is installed and provides installation instructions if not
+func checkBunInstallation() error {
+	// Check if bun is in PATH
 	if _, err := exec.LookPath("bun"); err == nil {
-		return "bun"
+		return nil
 	}
+	
 	// Check bun's default installation location
 	if _, err := os.Stat(os.ExpandEnv("$HOME/.bun/bin/bun")); err == nil {
-		return "bun"
+		return nil
 	}
 	
-	// Fall back to pnpm (fast)
-	if _, err := exec.LookPath("pnpm"); err == nil {
-		return "pnpm"
-	}
-	
-	// Default to npm (slowest but always available)
-	return "npm"
+	// Bun not found - return helpful error message
+	return fmt.Errorf(`❌ Bun is required but not installed!
+
+Genesis requires bun for lightning-fast package management (5-10x faster than npm).
+
+Install bun first:
+  • macOS/Linux: curl -fsSL https://bun.sh/install | bash
+  • Windows: powershell -c "irm bun.sh/install.ps1 | iex"
+  • npm: npm install -g bun
+
+Then restart your terminal and try again.
+More info: https://bun.sh/docs/installation`)
 }
 
 func (g *Generator) CreateApp(appName, description string) error {
@@ -53,7 +64,7 @@ func (g *Generator) CreateApp(appName, description string) error {
 
 	cyan.Printf("🚀 Creating %s...\n", appName)
 	gray.Printf("Description: %s\n", description)
-	gray.Printf("Package Manager: %s ⚡\n", g.packageManager)
+	gray.Printf("Package Manager: %s ⚡ (5-10x faster than npm)\n", g.packageManager)
 	fmt.Println()
 
 	// Step 1: Create Nuxt app
@@ -144,17 +155,8 @@ func (g *Generator) getBunCommand() string {
 }
 
 func (g *Generator) addNuxtUI(appPath string) error {
-	// First install dependencies using the detected package manager
-	var installCmd *exec.Cmd
-	switch g.packageManager {
-	case "bun":
-		installCmd = exec.Command(g.getBunCommand(), "install")
-	case "pnpm":
-		installCmd = exec.Command("pnpm", "install")
-	default:
-		installCmd = exec.Command("npm", "install")
-	}
-	
+	// Install dependencies using bun (lightning fast!)
+	installCmd := exec.Command(g.getBunCommand(), "install")
 	installCmd.Dir = appPath
 	installCmd.Stdout = os.Stdout
 	installCmd.Stderr = os.Stderr
