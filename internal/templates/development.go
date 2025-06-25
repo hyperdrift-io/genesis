@@ -1,7 +1,7 @@
-// Development guide generator - provides the "How" for Claude
+package templates
 
-export function generateDevelopmentGuide() {
-  return `# Development Guide
+func GenerateDevelopmentGuide() string {
+	return `# Development Guide
 
 ## Best Practices for this Nuxt 3 + Nuxt UI Project
 
@@ -9,7 +9,7 @@ export function generateDevelopmentGuide() {
 
 Always use Nuxt UI components for consistency:
 
-\`\`\`vue
+` + "```" + `vue
 <!-- Use these components -->
 <UButton>Click me</UButton>
 <UCard>Content here</UCard>
@@ -17,13 +17,13 @@ Always use Nuxt UI components for consistency:
 <UInput v-model="value" />
 <UTextarea v-model="text" />
 <USelect v-model="selected" :options="options" />
-\`\`\`
+` + "```" + `
 
 ### Page Structure
 
 Follow this pattern for pages:
 
-\`\`\`vue
+` + "```" + `vue
 <template>
   <UContainer>
     <div class="space-y-6">
@@ -35,13 +35,13 @@ Follow this pattern for pages:
 <script setup>
 // Page logic here
 </script>
-\`\`\`
+` + "```" + `
 
 ### API Routes
 
-Create API routes in \`server/api/\`:
+Create API routes in ` + "`server/api/`" + `:
 
-\`\`\`typescript
+` + "```" + `typescript
 // server/api/items.get.ts
 export default defineEventHandler(async (event) => {
   // Handle GET requests
@@ -54,13 +54,13 @@ export default defineEventHandler(async (event) => {
   // Handle POST requests
   return { success: true }
 })
-\`\`\`
+` + "```" + `
 
 ### State Management
 
-Use Pinia stores in \`stores/\`:
+Use Pinia stores in ` + "`stores/`" + `:
 
-\`\`\`typescript
+` + "```" + `typescript
 // stores/app.ts
 export const useAppStore = defineStore('app', {
   state: () => ({
@@ -73,18 +73,18 @@ export const useAppStore = defineStore('app', {
     }
   }
 })
-\`\`\`
+` + "```" + `
 
 ### Styling Guidelines
 
 - Use Tailwind CSS classes for styling
-- Leverage Nuxt UI's built-in color system: \`primary\`, \`secondary\`, \`success\`, \`warning\`, \`error\`
-- Use semantic spacing: \`space-y-4\`, \`gap-6\`, \`p-4\`, \`m-6\`
-- Make components responsive with \`sm:\`, \`md:\`, \`lg:\` prefixes
+- Leverage Nuxt UI's built-in color system: ` + "`primary`" + `, ` + "`secondary`" + `, ` + "`success`" + `, ` + "`warning`" + `, ` + "`error`" + `
+- Use semantic spacing: ` + "`space-y-4`" + `, ` + "`gap-6`" + `, ` + "`p-4`" + `, ` + "`m-6`" + `
+- Make components responsive with ` + "`sm:`" + `, ` + "`md:`" + `, ` + "`lg:`" + ` prefixes
 
 ### Form Handling
 
-\`\`\`vue
+` + "```" + `vue
 <template>
   <UForm :state="form" @submit="onSubmit">
     <UInput v-model="form.name" label="Name" required />
@@ -104,24 +104,24 @@ async function onSubmit() {
   })
 }
 </script>
-\`\`\`
+` + "```" + `
 
 ### Navigation
 
 Use Nuxt's built-in navigation:
 
-\`\`\`vue
+` + "```" + `vue
 <template>
   <nav>
     <NuxtLink to="/">Home</NuxtLink>
     <NuxtLink to="/about">About</NuxtLink>
   </nav>
 </template>
-\`\`\`
+` + "```" + `
 
 ### Error Handling
 
-\`\`\`vue
+` + "```" + `vue
 <script setup>
 // Handle async data with error states
 const { data, error, pending } = await useFetch('/api/data')
@@ -133,18 +133,18 @@ if (error.value) {
   })
 }
 </script>
-\`\`\`
+` + "```" + `
 
 ### SEO & Meta
 
-\`\`\`vue
+` + "```" + `vue
 <script setup>
 useSeoMeta({
   title: 'Page Title',
   description: 'Page description'
 })
 </script>
-\`\`\`
+` + "```" + `
 
-Remember: Keep components simple, use Nuxt UI for consistency, and leverage Nuxt 3's auto-imports.`;
+Remember: Keep components simple, use Nuxt UI for consistency, and leverage Nuxt 3's auto-imports.`
 } 

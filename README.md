@@ -2,14 +2,40 @@
 
 **One-command app creation** using Nuxt + Claude Code integration
 
+**Built with Go** for fast startup, single binary distribution, and zero dependencies.
+
 ## What Genesis V2 Does
 
 Genesis creates a complete, working Nuxt 3 app automatically using AI. **No manual steps, no configuration** - just describe what you want and get a fully built app.
 
 ## Installation
 
+### Download Binary (Recommended)
+
 ```bash
-npm install -g genesis
+# macOS (Apple Silicon)
+curl -L https://github.com/hyperdrift-io/genesis/releases/latest/download/genesis-darwin-arm64 -o genesis
+chmod +x genesis
+sudo mv genesis /usr/local/bin/
+
+# macOS (Intel)
+curl -L https://github.com/hyperdrift-io/genesis/releases/latest/download/genesis-darwin-amd64 -o genesis
+chmod +x genesis
+sudo mv genesis /usr/local/bin/
+
+# Linux (x64)
+curl -L https://github.com/hyperdrift-io/genesis/releases/latest/download/genesis-linux-amd64 -o genesis
+chmod +x genesis
+sudo mv genesis /usr/local/bin/
+
+# Windows (x64)
+# Download genesis-windows-amd64.exe from releases page
+```
+
+### Or Build from Source
+
+```bash
+go install github.com/hyperdrift-io/genesis/cmd/genesis@latest
 ```
 
 ## Usage
@@ -77,25 +103,43 @@ claude "add admin dashboard for content management"
 
 ## Why This Approach Works
 
+- **Single binary distribution** - No dependencies, no runtime required
+- **Fast startup** - Go performance vs Node.js
 - **No templates to maintain** - AI generates fresh, modern code
 - **No configuration hell** - Works with Nuxt + Nuxt UI defaults  
 - **Always up-to-date** - Uses latest best practices
 - **Complete applications** - Not just scaffolding, but working apps
 - **AI-driven development** - Intelligent code generation and implementation
 
+## Development
+
+```bash
+# Build for current platform
+make build
+
+# Build for all platforms  
+make dist
+
+# Test locally
+make dev
+
+# Install locally
+make install
+```
+
 ## Architecture
 
 ```
 genesis/
-├── bin/genesis.js           # CLI entry point
-├── src/
-│   ├── index.js            # Main creation + Claude integration
-│   ├── readme-generator.js # Generates project context
-│   └── development-generator.js # Generates dev guidelines
-└── package.json
+├── cmd/genesis/            # CLI entry point
+├── internal/
+│   ├── generator/          # Main creation logic + Claude integration
+│   └── templates/          # README and dev guide generators
+├── Makefile               # Build automation
+└── go.mod                 # Go dependencies
 ```
 
-**Result:** One command = Complete working app 🚀
+**Benefits:** Single binary, fast startup, zero dependencies 🚀
 
 ---
 
