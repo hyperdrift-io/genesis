@@ -34,8 +34,21 @@ sudo mv genesis /usr/local/bin/
 
 ### Or Build from Source
 
+**Requires Go 1.19+ installed first:**
+
 ```bash
+# Install Go if not already installed:
+# macOS: brew install go
+# Linux: sudo apt install golang-go  (Ubuntu/Debian)
+# Windows: Download from https://golang.org/dl/
+
+# Then install Genesis:
 go install github.com/hyperdrift-io/genesis/cmd/genesis@latest
+
+# Or clone and build:
+git clone https://github.com/hyperdrift-io/genesis.git
+cd genesis
+make build
 ```
 
 ## Usage

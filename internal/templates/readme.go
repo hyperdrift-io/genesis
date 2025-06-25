@@ -55,12 +55,19 @@ bun run dev
 `+"```"+`
 
 ## Build Instructions for AI
-1. **Read this README completely** to understand the requirements
-2. **Replace the starter template** in app.vue with the actual application
-3. **Create the main functionality** as described in the requirements above
-4. **Use Nuxt UI components** throughout the application
-5. **Test the application** to ensure it works properly
-6. **Iterate and improve** based on the requirements
+1. **Install Claude Code** (if not already installed):
+   `+"```"+`bash
+   npm install -g @anthropic-ai/claude-code
+   # or: bun add -g @anthropic-ai/claude-code
+   # or: pnpm add -g @anthropic-ai/claude-code
+   `+"```"+`
+
+2. **Read this README completely** to understand the requirements
+3. **Replace the starter template** in app.vue with the actual application
+4. **Create the main functionality** as described in the requirements above
+5. **Use Nuxt UI components** throughout the application
+6. **Test the application** to ensure it works properly
+7. **Iterate and improve** based on the requirements
 
 **Start building now! Replace the current app.vue with the actual %s application.**`, appName, description, appName)
 } 

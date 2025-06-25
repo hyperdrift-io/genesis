@@ -92,10 +92,20 @@ func (g *Generator) CreateApp(appName, description string) error {
 	gray.Printf("  cd %s\n", appName)
 	gray.Printf("  %s run dev\n", g.packageManager)
 	fmt.Println()
-	cyan.Println("Build with Claude Code:")
-	gray.Println(`  claude "Read the README.md and build the complete application"`)
-	fmt.Println()
-	yellow.Println("💡 The README.md contains the perfect AI prompt with all requirements")
+	
+	// Check Claude Code availability
+	claudeAvailable, installMsg := g.checkClaudeCode()
+	if claudeAvailable {
+		cyan.Println("Build with Claude Code:")
+		gray.Println(`  claude "Read the README.md and build the complete application"`)
+		fmt.Println()
+		yellow.Println("💡 The README.md contains the perfect AI prompt with all requirements")
+	} else {
+		yellow.Println("⚠️  Claude Code Setup Required:")
+		fmt.Println(installMsg)
+		fmt.Println()
+		yellow.Println("💡 The README.md contains the perfect AI prompt for when you install Claude Code")
+	}
 	fmt.Println()
 
 	return nil
@@ -280,4 +290,28 @@ export default defineNuxtConfig({
 	}
 
 	return nil
+}
+
+func (g *Generator) checkClaudeCode() (bool, string) {
+	// Check if claude is available
+	if _, err := exec.LookPath("claude"); err == nil {
+		return true, ""
+	}
+	
+	// Provide installation instructions
+	installMsg := `Claude Code is not installed. To build the app with AI:
+
+1. Install Claude Code:
+   npm install -g @anthropic-ai/claude-code
+   # or with bun: bun add -g @anthropic-ai/claude-code
+   # or with pnpm: pnpm add -g @anthropic-ai/claude-code
+
+2. Then run:
+   claude "Read the README.md and build the complete application"
+
+Alternatively, you can:
+- Use the starter template as-is and develop manually
+- Install Claude Code later when you're ready for AI assistance`
+
+	return false, installMsg
 } 

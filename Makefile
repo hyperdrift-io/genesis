@@ -1,11 +1,15 @@
-.PHONY: build build-all clean test install help
+.PHONY: build build-all clean test install help check-go
+
+# Check if Go is installed
+check-go:
+	@which go > /dev/null || (echo "❌ Go is not installed!" && echo "" && echo "Please install Go first:" && echo "  • macOS: brew install go" && echo "  • Linux: sudo apt install golang-go  (Ubuntu/Debian)" && echo "  •        sudo yum install golang     (RHEL/CentOS)" && echo "  • Windows: Download from https://golang.org/dl/" && echo "" && echo "Or download from: https://golang.org/dl/" && exit 1)
 
 # Build for current platform
-build:
+build: check-go
 	go build -o genesis ./cmd/genesis
 
 # Build for all platforms
-build-all:
+build-all: check-go
 	GOOS=linux GOARCH=amd64 go build -o dist/genesis-linux-amd64 ./cmd/genesis
 	GOOS=linux GOARCH=arm64 go build -o dist/genesis-linux-arm64 ./cmd/genesis
 	GOOS=darwin GOARCH=amd64 go build -o dist/genesis-darwin-amd64 ./cmd/genesis
@@ -23,11 +27,11 @@ clean:
 	rm -rf dist/
 
 # Test the application
-test:
+test: check-go
 	go test ./...
 
 # Install locally
-install:
+install: check-go
 	go install ./cmd/genesis
 
 # Development mode - build and test
