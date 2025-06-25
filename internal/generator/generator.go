@@ -86,14 +86,41 @@ func (g *Generator) CreateApp(appName, description string) error {
 }
 
 func (g *Generator) createNuxtApp(appName string) error {
-	cmd := exec.Command("npx", "nuxi@latest", "init", appName)
+	cmd := exec.Command("npx", "nuxi@latest", "init", appName, "--package-manager", "npm", "--git-init")
 	cmd.Dir = g.outputDir
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
-	return cmd.Run()
+	
+	// Force non-interactive mode
+	cmd.Env = append(os.Environ(), 
+		"CI=true",
+		"NUXT_TELEMETRY_DISABLED=1",
+		"NODE_ENV=production",
+	)
+	
+	err := cmd.Run()
+	
+	// Check if the app directory was created successfully despite TTY errors
+	appPath := filepath.Join(g.outputDir, appName)
+	if _, statErr := os.Stat(filepath.Join(appPath, "package.json")); statErr == nil {
+		// App was created successfully, ignore the TTY error
+		return nil
+	}
+	
+	return err
 }
 
 func (g *Generator) addNuxtUI(appPath string) error {
+	// First install dependencies
+	installCmd := exec.Command("npm", "install")
+	installCmd.Dir = appPath
+	installCmd.Stdout = os.Stdout
+	installCmd.Stderr = os.Stderr
+	if err := installCmd.Run(); err != nil {
+		return fmt.Errorf("failed to install dependencies: %w", err)
+	}
+
+	// Then add Nuxt UI module
 	cmd := exec.Command("npx", "nuxi@latest", "module", "add", "ui")
 	cmd.Dir = appPath
 	cmd.Stdout = os.Stdout

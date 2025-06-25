@@ -277,6 +277,12 @@ go.work
 # Genesis binary
 genesis
 
+# Distribution directory
+dist/
+
+# Sandbox directory for testing
+sandbox/
+
 # IDE files
 .vscode/
 .idea/
