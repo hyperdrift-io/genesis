@@ -1,28 +1,35 @@
 {
-  "name": "genesis-monorepo",
-  "version": "0.1.0",
-  "private": true,
-  "description": "Genesis - Create scalable web applications stack",
-  "author": "Genesis Team",
-  "license": "MIT",
-  "engines": {
-    "node": ">=18.0.0",
-    "pnpm": ">=8.0.0"
+  "name": "genesis",
+  "version": "2.0.0",
+  "description": "Minimal app generator using Nuxt + AI-driven development",
+  "type": "module",
+  "bin": {
+    "genesis": "./bin/genesis.js"
   },
+  "main": "./src/index.js",
   "scripts": {
-    "build": "turbo run build",
-    "dev": "turbo run dev",
-    "lint": "turbo run lint",
-    "test": "turbo run test",
-    "clean": "turbo run clean && rm -rf node_modules",
-    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
-    "publish-packages": "turbo run build lint test && changeset publish"
+    "dev": "node bin/genesis.js",
+    "test": "echo \"No tests yet\" && exit 0"
   },
-  "devDependencies": {
-    "@changesets/cli": "^2.27.1",
-    "prettier": "^3.1.1",
-    "turbo": "^1.10.16",
-    "typescript": "^5.3.3"
+  "keywords": [
+    "generator",
+    "nuxt",
+    "cli",
+    "scaffold",
+    "ai"
+  ],
+  "author": "Hyperdrift",
+  "license": "MIT",
+  "dependencies": {
+    "commander": "^12.0.0",
+    "picocolors": "^1.0.0",
+    "prompts": "^2.4.2"
   },
-  "packageManager": "pnpm@8.11.0"
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hyperdrift-io/genesis.git"
+  }
 }

@@ -1,6 +1,0 @@
-# Cursor AI Rules
-
-All queries must be checked against the rules in `../docs/rules/rules.md` before implementation. The rules in that document are the source of truth for technology and feature selection.
-
-- Always consult `docs/rules/rules.md` for guidance.
-- If a feature requires persistence, relational queries, authentication, or real-time data, you MUST use Supabase as per the rules.

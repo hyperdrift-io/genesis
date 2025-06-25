@@ -1,111 +1,70 @@
-# Genesis
+# Genesis V2
 
-Genesis is a hyperdrift app creation tool that generates complete web applications from a single prompt. Inspired by Tonk.xyz but streamlined for simplicity and effectiveness.
+Minimal app generator using Nuxt + AI-driven development
 
-## 🌟 What is Genesis?
+## What Genesis V2 Does
 
-Genesis automates the entire process of web application creation by:
-1. Using a single prompt to understand your requirements
-2. Generating a complete, ready-to-run application with the right tools and configurations
-3. Providing intelligent defaults that make sense
-4. Including built-in rules and instructions for AI-assisted development
+Genesis creates a basic Nuxt 3 + Nuxt UI app and generates documentation that gives Claude (or other AI tools) the context needed to build your app intelligently.
 
+**No templates. No complex rules. Just minimal setup + AI intelligence.**
 
-## 🚀 Key Features
+## Installation
 
-- **Single Prompt App Creation**: Generate full applications from a simple description
-- **Production-Ready Setup**: All configuration is done for you
-- **AI-First Development**: Built-in LLM rules for continued development with AI assistants
-- **Simplified Architecture**: No unnecessary complexity or dependencies
-- **Modern Stack**: React, TypeScript, Tailwind CSS, and Supabase (optional)
+```bash
+npm install -g genesis
+```
 
-## 📦 Structure of a Genesis Application
+## Usage
+
+```bash
+genesis my-app "E-commerce store for handmade jewelry"
+cd my-app
+npm run dev
+
+# Then use Claude to build it
+claude "Read the README and build this app step by step"
+```
+
+## How It Works
+
+1. **Creates Nuxt 3 app** with `npx nuxi init`
+2. **Adds Nuxt UI** with `npx nuxi module add ui`  
+3. **Generates README.md** with your app description and context
+4. **Generates DEVELOPMENT.md** with Nuxt UI best practices
+5. **You use Claude** to build the actual functionality
+
+## Why This Approach Works
+
+- **No config hell**: Just Nuxt + Nuxt UI defaults
+- **No maintenance**: AI does the intelligent work
+- **Always modern**: Uses latest Nuxt conventions
+- **Simple**: ~100 lines of code total
+
+## Examples
+
+```bash
+# Create different types of apps
+genesis blog-app "Personal blog with articles and comments"
+genesis store-app "E-commerce for vintage clothes"
+genesis saas-app "Project management tool for small teams"
+
+# Claude builds them all using the same simple context
+```
+
+## Architecture
 
 ```
-my-app/
+genesis/
+├── bin/genesis.js           # CLI entry point
 ├── src/
-│   ├── components/   # Reusable UI components
-│   ├── modules/      # Core functionality
-│   ├── stores/       # State management
-│   ├── views/        # Page components
-│   ├── App.tsx       # Root component
-│   └── index.tsx     # Entry point
-├── public/           # Static assets
-├── .cursor/          # AI development rules 
-│   └── rules/        # LLM rules for development assistance
-└── package.json      # Project configuration
+│   ├── index.js            # Main creation logic
+│   ├── readme-generator.js # Generates README context
+│   └── development-generator.js # Generates dev guidelines
+└── package.json
 ```
 
-## 🛠️ Installation
+**Total:** ~100 lines of JavaScript. That's it.
 
-### Global Installation
+---
 
-You can install Genesis globally to use it from anywhere:
-
-```bash
-pip install -e git+https://github.com/yannvr/genesis.git#egg=genesis
-```
-
-After installation, you'll have access to the `genesis` command globally:
-
-```bash
-genesis my-app --description "A blog application" --functionality "Users can create posts with tags"
-```
-
-### Development Installation
-
-For contributing to Genesis or running from source:
-
-```bash
-git clone https://github.com/yannvr/genesis.git
-cd genesis
-pip install -e .
-```
-
-### Using a Virtual Environment (Recommended)
-
-It's recommended to use a virtual environment for development to isolate your dependencies:
-
-```bash
-# Clone the repository
-git clone https://github.com/yannvr/genesis.git
-cd genesis
-
-# Set up virtual environment (automatically uses Python 3.8+ if available)
-./setup_venv.sh
-
-# Activate the virtual environment
-source venv/bin/activate
-
-# Now you can use the genesis command from this environment
-genesis --help
-
-# When you're done, deactivate the environment
-deactivate
-```
-
-## 🛠️ Usage
-
-Once installed, you can create new applications:
-
-```bash
-genesis my-app
-```
-
-The CLI will prompt you for a description of your application. That's it!
-
-You can also provide description and functionality details directly:
-
-```bash
-genesis my-app --description "A task management app" --functionality "Users can create tasks, assign them to others, and track progress"
-```
-
-A highly DX friendly boilerplate will be created with initial typings. It doesn't not generate the app. The app is meant to generate most of the APP (UI, stores and behaviour) on the second prompt. The second prompt can be the same one as the first one (ie: `Users can create tasks, assign them to others, and track progress`)
-
-## 🤖 AI-Assisted Development
-
-It is best used from AI assisted IDE like:
-- Cursor
-- WindSurf
-
-These rules help AI tools understand your codebase and make intelligent suggestions that align with your project's architecture and goals.
+*Genesis V1 archive available at tag `v1-archive`*
